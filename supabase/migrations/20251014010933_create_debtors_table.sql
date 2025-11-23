@@ -1,0 +1,7 @@
+CREATE TABLE debtors (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  payment_id UUID NOT NULL REFERENCES payments(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  amount_owed NUMERIC(12, 2) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
