@@ -1,5 +1,4 @@
 export const CURRENCIES = {
-  "1inch": "1inch",
   aave: "Aave",
   ada: "Cardano",
   aed: "Emirati Dirham",
