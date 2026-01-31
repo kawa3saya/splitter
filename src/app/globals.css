@@ -1,1 +1,19 @@
 @import "tailwindcss";
+
+@theme {
+  --color-primary: #0866ff;
+  --color-background: #ebf2fc;
+  --color-base: #ffffff;
+  --text-color-base:#2c3442;
+  --text-color-white:#ffffff;
+  --spacing-xxs: 0.25rem;
+  --spacing-xs: 0.5rem;
+  --spacing-s: 1rem;
+  --spacing-m: 1.5rem;
+  --spacing-l: 2rem;
+  --spacing-xl: 2.5rem;
+}
+
+body {
+  color: var(--text-color-base);
+}
