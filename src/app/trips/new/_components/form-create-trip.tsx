@@ -1,188 +1,205 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { createTrip } from "@/app/trips/new/_actions/create-trip";
+import Link from "next/link";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { CircleMinus, CirclePlus, Loader2 } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+  FieldError,
+} from "@/components/ui/field";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { CURRENCIES } from "@/constants/currencies";
-
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { FormCreateTripSchemaType } from "@/app/trips/new/_types/form-create-trip-schema-type";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { formCreateTripSchema } from "@/app/trips/new/_schema/form-create-trip-schema";
+import { useCreateTrip } from "@/app/trips/new/_hooks/use-create-trip";
 export function FormCreateTrip() {
-  const router = useRouter();
-  const [title, setTitle] = useState("");
-  const [baseCurrency, setBaseCurrency] = useState<string>("");
-  const [currencies, setCurrencies] = useState<string[]>([]);
-  const [memberNames, setMemberNames] = useState<string[]>([""]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleAddMember = () => {
-    setMemberNames([...memberNames, ""]);
-  };
-
-  const handleRemoveMember = (index: number) => {
-    if (memberNames.length > 1) {
-      setMemberNames(memberNames.filter((_, i) => i !== index));
-    }
-  };
-
-  const handleMemberChange = (index: number, value: string) => {
-    const newMembers = [...memberNames];
-    newMembers[index] = value;
-    setMemberNames(newMembers);
-  };
-
-  const handleCurrencyChange = (code: string) => {
-    if (currencies.includes(code)) {
-      setCurrencies(currencies.filter((c) => c !== code));
-    } else {
-      setCurrencies([...currencies, code]);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
-      if (
-        !title ||
-        !baseCurrency ||
-        !memberNames ||
-        memberNames.length === 0 ||
-        !currencies ||
-        currencies.length == 0
-      ) {
-        throw new Error("Invalid form data");
-      }
-
-      const result = await createTrip({
-        title: title.trim(),
-        base_currency: baseCurrency,
-        member_names: memberNames,
-        currencies: currencies,
-      });
-
-      router.replace(`/trips/${result.trip.id}/share`);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to create trip");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { submitTrip, loading } = useCreateTrip();
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormCreateTripSchemaType>({
+    resolver: zodResolver(formCreateTripSchema),
+    defaultValues: {
+      title: "",
+      base_currency: "",
+      currencies: [],
+      member_names: [{ name: "" }],
+    },
+  });
+  const { fields, append, remove } = useFieldArray({
+    control: control,
+    name: "member_names",
+  });
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Create New Trip</h1>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-            {error}
-          </div>
-        )}
-
-        <div>
-          <label className="block text-sm font-medium mb-2">Trip Title</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter trip title"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2">
-            Base Currency
-          </label>
-          <select
-            value={baseCurrency ?? ""}
-            onChange={(e) => setBaseCurrency(e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Select a base currency</option>
-            {Object.entries(CURRENCIES)
-              .filter(([, name]) => name !== "")
-              .map(([code, name]) => (
-                <option key={code} value={code}>
-                  {code.toUpperCase()} - {name}
-                </option>
-              ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2">Currencies</label>
-          <div className="space-y-2">
-            {Object.entries(CURRENCIES)
-              .filter(([, name]) => name !== "")
-              .map(([code, name]) => (
-                <div key={code} className="flex gap-2">
-                  <input
-                    type="checkbox"
-                    value={code}
-                    onChange={() => handleCurrencyChange(code)}
-                    checked={currencies.includes(code)}
-                  />
-                  {code.toUpperCase()} - {name}
-                </div>
-              ))}
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2">Trip Members</label>
-          <div className="space-y-2">
-            {memberNames.map((name, index) => (
-              <div key={index} className="flex gap-2">
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => handleMemberChange(index, e.target.value)}
-                  className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter member name"
+    <Card>
+      <form onSubmit={handleSubmit(submitTrip)}>
+        <FieldGroup>
+          <FieldSet>
+            <FieldLegend>Create a new trip</FieldLegend>
+            <FieldGroup>
+              <Field>
+                <FieldLabel htmlFor="trip-name">Trip name</FieldLabel>
+                <Input
+                  id="trip-name"
+                  {...register("title")}
+                  placeholder="e.g., Asian Adventure"
                 />
-                {memberNames.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveMember(index)}
-                    className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                  >
-                    Remove
-                  </button>
+                {errors.title?.message && (
+                  <FieldError errors={[errors.title]} />
                 )}
-              </div>
-            ))}
-          </div>
-          <button
-            type="button"
-            onClick={handleAddMember}
-            className="mt-2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-          >
-            Add Member
-          </button>
-        </div>
-
-        <div className="flex gap-4">
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="px-6 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
-            disabled={loading}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
-            disabled={loading}
-          >
-            {loading ? "Creating..." : "Create Trip"}
-          </button>
-        </div>
+              </Field>
+              <Field>
+                <FieldLabel>Base currency (for settlement)</FieldLabel>
+                <Controller
+                  control={control}
+                  name="base_currency"
+                  render={({ field }) => (
+                    <Select
+                      value={field.value ?? ""}
+                      onValueChange={field.onChange}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a currency" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(CURRENCIES).map(([code, name]) => (
+                          <SelectItem key={code} value={code}>
+                            {name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.base_currency?.message && (
+                  <FieldError errors={[errors.base_currency]} />
+                )}
+              </Field>
+              <Field>
+                <FieldLabel>Currencies to track</FieldLabel>
+                <Controller
+                  control={control}
+                  name="currencies"
+                  render={({ field }) => (
+                    <Select>
+                      <SelectTrigger>
+                        <span>
+                          {(field.value ?? []).length > 0
+                            ? `${(field.value ?? []).length} selected`
+                            : "Select currencies"}
+                        </span>
+                      </SelectTrigger>
+                      <SelectContent className="mb-xs">
+                        <div className="flex flex-col gap-xs">
+                          {Object.entries(CURRENCIES).map(([code, name]) => (
+                            <div
+                              key={code}
+                              className="flex items-center gap-xxs hover:bg-gray-100 selected:bg-gray-100"
+                            >
+                              <Checkbox
+                                id={code}
+                                checked={(field.value ?? []).includes(code)}
+                                onCheckedChange={(checked) => {
+                                  const current = field.value ?? [];
+                                  if (checked) {
+                                    field.onChange([...current, code]);
+                                  } else {
+                                    field.onChange(
+                                      current.filter((c) => c !== code)
+                                    );
+                                  }
+                                }}
+                              />
+                              <Label htmlFor={code}>{name}</Label>
+                            </div>
+                          ))}
+                        </div>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.currencies?.message && (
+                  <FieldError errors={[errors.currencies]} />
+                )}
+              </Field>
+              <Field>
+                <FieldLabel>Members</FieldLabel>
+                {fields.map((field, index) => (
+                  <div key={field.id} className="flex flex-col gap-xxs">
+                    <div className="flex items-center gap-xxs">
+                      <Input
+                        {...register(`member_names.${index}.name`)}
+                        placeholder="Enter member name"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => remove(index)}
+                      >
+                        <CircleMinus className="size-6 font-l text-primary" />
+                      </Button>
+                    </div>
+                    {/* FIX ME:  appendして二人分にする→1人分に減らす→Submitを押す→エラーが消えてしまう*/}
+                    {errors.member_names?.[index]?.name?.message && (
+                      <FieldError
+                        errors={[errors.member_names?.[index]?.name]}
+                      />
+                    )}
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => append({ name: "" })}
+                  className="max-w-fit"
+                  size="xs"
+                >
+                  <CirclePlus className="size-4" /> Add another member
+                </Button>
+                {errors.member_names?.message && (
+                  <FieldError errors={[errors.member_names]} />
+                )}
+              </Field>
+            </FieldGroup>
+          </FieldSet>
+          <Field orientation="horizontal">
+            <div className="flex items-center gap-xs">
+              <Button variant="outline" type="button">
+                <Link href="/">Cancel</Link>
+              </Button>
+              <Button type="submit" variant="default" disabled={loading}>
+                {loading ? (
+                  <span className="flex items-center gap-xs">
+                    <Loader2 className="size-4 animate-spin" />
+                    Submitting...
+                  </span>
+                ) : (
+                  "Submit"
+                )}
+              </Button>
+            </div>
+          </Field>
+        </FieldGroup>
       </form>
-    </div>
+    </Card>
   );
 }
