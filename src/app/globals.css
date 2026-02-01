@@ -3,9 +3,11 @@
 @theme {
   --color-primary: #0866ff;
   --color-background: #ebf2fc;
+  --color-gray: #d1d5db;
   --color-base: #ffffff;
   --text-color-base:#2c3442;
   --text-color-white:#ffffff;
+  --text-color-destructive:#ff0000;
   --spacing-xxs: 0.25rem;
   --spacing-xs: 0.5rem;
   --spacing-s: 1rem;

@@ -30,7 +30,7 @@ export function FeaturesCarousel() {
       opts={{ align: "center", loop: true }}
       className="w-[80%] max-w-[min(100%,24rem)]"
     >
-      <CarouselContent className="-ml-2 md:-ml-4">
+      <CarouselContent className="-ml-2 md:-ml-4 pb-s">
         {FEATURES.map(({ icon: Icon, label }) => (
           <CarouselItem
             key={label}

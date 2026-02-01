@@ -1,15 +1,9 @@
 "use server";
 
 import { supabase } from "@/lib/supabase";
+import { FormCreateTripSchemaType } from "@/app/trips/new/_types/form-create-trip-schema-type";
 
-type CreateTripData = {
-  title: string;
-  base_currency: string;
-  member_names: string[];
-  currencies: string[];
-};
-
-export async function createTrip(formData: CreateTripData) {
+export async function createTrip(formData: FormCreateTripSchemaType) {
   const { data: trip, error: tripError } = await supabase
     .from("trips")
     .insert({
@@ -37,8 +31,8 @@ export async function createTrip(formData: CreateTripData) {
     throw new Error(currenciesError.message);
   }
 
-  const users = formData.member_names.map((name) => ({
-    name: name.trim(),
+  const users = formData.member_names.map((member) => ({
+    name: member.name.trim(),
     trip_id: trip.id,
   }));
 
