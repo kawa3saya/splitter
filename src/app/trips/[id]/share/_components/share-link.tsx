@@ -20,8 +20,8 @@ export function ShareLink({ tripId }: { tripId: string }) {
   };
 
   return (
-    <div className="flex flex-col gap-m w-full items-center">
-      <CircleCheckBig className="size-10 text-primary" />
+    <div className="flex flex-col gap-l w-full items-center">
+      <CircleCheckBig className="size-16 text-primary" />
       <div>
         <p className="text-xl font-bold">Trip created successfully</p>
         <p>Share the trip with your friends</p>
@@ -55,7 +55,7 @@ export function ShareLink({ tripId }: { tripId: string }) {
       </Field>
       <Button asChild className="w-fit font-bold" size="lg">
         <Link href={`/trips/${tripId}`}>
-          <ArrowRight className="size-4" /> View Trip
+          <ArrowRight className="size-6" /> View Trip
         </Link>
       </Button>
     </div>
