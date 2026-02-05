@@ -11,9 +11,9 @@ export default async function SharePage({ params }: ParamsProps) {
   const tripId = (await params).id;
 
   return (
-    <div className="p-l flex flex-col gap-s h-screen bg-gradient-to-b from-primary to-white">
+    <div className="p-l flex flex-col gap-s h-content">
       <Link href="/">
-        <span className="flex items-center gap-xs text-white font-bold underline">
+        <span className="flex items-center gap-xs font-bold underline">
           <ArrowLeft className="size-6" />
           Back to Home
         </span>

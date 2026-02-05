@@ -14,6 +14,8 @@
   --spacing-m: 1.5rem;
   --spacing-l: 2rem;
   --spacing-xl: 2.5rem;
+  --spacing-header: 4rem;
+  --spacing-content: calc(100dvh - var(--spacing-header));
 }
 
 body {
