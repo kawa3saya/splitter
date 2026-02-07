@@ -21,5 +21,6 @@ export type PaymentWithDetailsType = PaymentType & {
 export type TripDetailType = {
   trip: TripType;
   users: UserType[];
+  currencies: CurrencyType[];
   payments: PaymentWithDetailsType[];
 };

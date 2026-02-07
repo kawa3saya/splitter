@@ -21,7 +21,7 @@ export default async function TripDetailPage({ params }: ParamsProps) {
     return notFound();
   }
 
-  const { trip, users, payments } = data;
+  const { trip, users, payments, currencies } = data;
 
   return (
     <>
@@ -31,7 +31,11 @@ export default async function TripDetailPage({ params }: ParamsProps) {
           Base currency: {trip.base_currency}
           <span className="pl-xxs">{getCurrencyEmoji(trip.base_currency)}</span>
         </p>
-        <TripPaymentCard payments={payments} />
+        <TripPaymentCard
+          payments={payments}
+          currencies={currencies}
+          users={users}
+        />
       </div>
 
       <Button
