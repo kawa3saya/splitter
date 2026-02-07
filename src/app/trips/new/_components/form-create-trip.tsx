@@ -81,9 +81,9 @@ export function FormCreateTrip() {
                         <SelectValue placeholder="Select a currency" />
                       </SelectTrigger>
                       <SelectContent>
-                        {Object.entries(CURRENCIES).map(([code, name]) => (
+                        {Object.entries(CURRENCIES).map(([code, item]) => (
                           <SelectItem key={code} value={code}>
-                            {name}
+                            {item.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -110,7 +110,7 @@ export function FormCreateTrip() {
                       </SelectTrigger>
                       <SelectContent className="mb-xs">
                         <div className="flex flex-col gap-xs">
-                          {Object.entries(CURRENCIES).map(([code, name]) => (
+                          {Object.entries(CURRENCIES).map(([code, item]) => (
                             <div
                               key={code}
                               className="flex items-center gap-xxs hover:bg-gray-100 selected:bg-gray-100"
@@ -129,7 +129,7 @@ export function FormCreateTrip() {
                                   }
                                 }}
                               />
-                              <Label htmlFor={code}>{name}</Label>
+                              <Label htmlFor={code}>{item.name}</Label>
                             </div>
                           ))}
                         </div>
