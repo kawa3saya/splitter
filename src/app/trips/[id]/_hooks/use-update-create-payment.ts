@@ -24,7 +24,7 @@ export function useUpdateCreatePayment() {
       !formData.debtors ||
       formData.debtors.length < 1
     ) {
-      toast.error("Invalid form data");
+      toast.error("Invalid form data", { position: "top-center" });
       return;
     }
 
@@ -35,10 +35,10 @@ export function useUpdateCreatePayment() {
       } else {
         await createPayment(formData);
       }
-      toast.success("Payment saved successfully");
+      toast.success("Payment saved successfully", { position: "top-center" });
       router.refresh();
     } catch (error) {
-      toast.error("Failed to save payment");
+      toast.error("Failed to save payment", { position: "top-center" });
       return error;
     } finally {
       setLoading(false);
