@@ -13,6 +13,7 @@ import { formatDate } from "@/utils/date";
 import { TripPaymentDialog } from "@/app/trips/[id]/_components/trip-payment-dialog";
 import { CurrencyType, UserType } from "@/types/type";
 import { PencilIcon } from "lucide-react";
+import { DeletePaymentDialog } from "@/app/trips/[id]/_components/delete-payment-dialog";
 
 export function TripPaymentCard({
   payments,
@@ -28,8 +29,9 @@ export function TripPaymentCard({
       {payments.map((payment) => (
         <Card
           key={payment.id}
-          className="gap-s transition-opacity hover:opacity-90"
+          className="relative gap-s transition-opacity hover:opacity-90"
         >
+          <DeletePaymentDialog payment={payment} />
           <CardHeader>
             <div>
               <div className="flex justify-between items-start">
