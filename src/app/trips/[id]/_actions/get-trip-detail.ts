@@ -15,6 +15,7 @@ export async function getTripDetail(
       `
       *,
       users(*),
+      currencies(*),
       payments(
         *,
         users(*),
@@ -33,6 +34,7 @@ export async function getTripDetail(
 
   const trip = data;
   const users = trip.users ?? [];
+  const currencies = trip.currencies ?? [];
   const payments = trip.payments ?? [];
 
   return {
@@ -44,6 +46,7 @@ export async function getTripDetail(
       updated_at: trip.updated_at,
     },
     users,
+    currencies,
     payments: payments.map((payment: PaymentDetailsType) => ({
       id: payment.id,
       trip_id: payment.trip_id,

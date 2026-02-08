@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TripCard } from "@/app/trips/[id]/_components/trip-card";
 import { TripPaymentCard } from "@/app/trips/[id]/_components/trip-payment-card";
+import { TripPaymentDialog } from "@/app/trips/[id]/_components/trip-payment-dialog";
 import { getCurrencyEmoji } from "@/utils/get-currency-emoji";
 
 type ParamsProps = {
@@ -21,7 +22,7 @@ export default async function TripDetailPage({ params }: ParamsProps) {
     return notFound();
   }
 
-  const { trip, users, payments } = data;
+  const { trip, users, payments, currencies } = data;
 
   return (
     <>
@@ -31,18 +32,21 @@ export default async function TripDetailPage({ params }: ParamsProps) {
           Base currency: {trip.base_currency}
           <span className="pl-xxs">{getCurrencyEmoji(trip.base_currency)}</span>
         </p>
-        <TripPaymentCard payments={payments} />
+        <TripPaymentCard
+          payments={payments}
+          currencies={currencies}
+          users={users}
+        />
       </div>
-
-      <Button
-        asChild
-        size="icon"
-        className="fixed bottom-25 right-4 z-10 size-14 rounded-full shadow-xl shadow-primary/10"
-      >
-        <Link href="#" className="flex items-center justify-center">
-          <Plus className="size-7" strokeWidth={2.5} />
-        </Link>
-      </Button>
+      <TripPaymentDialog payment={null} currencies={currencies} users={users}>
+        <Button
+          asChild
+          size="icon"
+          className="fixed bottom-25 right-4 z-10 size-14 rounded-full shadow-xl shadow-primary/10"
+        >
+          <Plus className="p-s" />
+        </Button>
+      </TripPaymentDialog>
 
       <div className="fixed bottom-0 left-0 right-0 z-10 bg-background p-4 shadow-top">
         <Button
