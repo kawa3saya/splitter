@@ -18,7 +18,7 @@ export function useUpdateCreatePayment() {
     if (
       !formData.trip_id ||
       !formData.amount ||
-      !formData.currency_code ||
+      !formData.currency_id ||
       !formData.description ||
       !formData.paid_user_id ||
       !formData.debtors ||

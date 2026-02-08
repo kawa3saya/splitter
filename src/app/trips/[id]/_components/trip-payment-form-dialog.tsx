@@ -81,7 +81,7 @@ export function TripPaymentFormDialog({
     defaultValues: {
       trip_id: currencies[0].trip_id,
       amount: payment?.amount ?? 0.1,
-      currency_code: payment?.currency_code ?? "",
+      currency_id: payment?.currency_id ?? "",
       description: payment?.description ?? "",
       paid_user_id: payment?.user_id ?? "",
       paid_at: payment?.paid_at ? new Date(payment?.paid_at) : new Date(),
@@ -145,7 +145,7 @@ export function TripPaymentFormDialog({
               <Label>CURRENCY</Label>
               <Controller
                 control={control}
-                name="currency_code"
+                name="currency_id"
                 render={({ field }) => (
                   <Select
                     value={field.value ?? ""}
@@ -156,7 +156,7 @@ export function TripPaymentFormDialog({
                     </SelectTrigger>
                     <SelectContent>
                       {currencies.map((currency) => (
-                        <SelectItem key={currency.code} value={currency.code}>
+                        <SelectItem key={currency.id} value={currency.id}>
                           {getCurrencyEmoji(currency.code)} {currency.code}
                         </SelectItem>
                       ))}
@@ -164,8 +164,8 @@ export function TripPaymentFormDialog({
                   </Select>
                 )}
               />
-              {errors.currency_code?.message && (
-                <FieldError errors={[errors.currency_code]} />
+              {errors.currency_id?.message && (
+                <FieldError errors={[errors.currency_id]} />
               )}
             </Field>
           </div>

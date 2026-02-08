@@ -4,24 +4,13 @@ import { supabase } from "@/lib/supabase";
 import { UpdateCreateTripPaymentSchemaType } from "@/app/trips/[id]/_types/update-create-trip-payment-schema-type";
 
 export async function createPayment(data: UpdateCreateTripPaymentSchemaType) {
-  const { data: currency, error: currencyError } = await supabase
-    .from("currencies")
-    .select("id")
-    .eq("trip_id", data.trip_id)
-    .eq("code", data.currency_code)
-    .single();
-
-  if (currencyError || !currency?.id) {
-    throw new Error("Currency not found");
-  }
-
   const { data: payment, error: insertError } = await supabase
     .from("payments")
     .insert({
       trip_id: data.trip_id,
       user_id: data.paid_user_id,
       amount: data.amount,
-      currency_id: currency.id,
+      currency_id: data.currency_id,
       description: data.description,
       paid_at: data.paid_at.toISOString(),
     })

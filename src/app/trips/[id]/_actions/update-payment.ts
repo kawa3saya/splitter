@@ -7,25 +7,13 @@ export async function updatePayment(
   id: string,
   data: UpdateCreateTripPaymentSchemaType,
 ) {
-  // Get currency id
-  const { data: currency, error: currencyError } = await supabase
-    .from("currencies")
-    .select("id")
-    .eq("trip_id", data.trip_id)
-    .eq("code", data.currency_code)
-    .single();
-
-  if (currencyError || !currency?.id) {
-    throw new Error("Currency not found");
-  }
-
   // Update payment
   const { error: updateError } = await supabase
     .from("payments")
     .update({
       user_id: data.paid_user_id,
       amount: data.amount,
-      currency_id: currency.id,
+      currency_id: data.currency_id,
       description: data.description,
       paid_at: data.paid_at.toISOString(),
     })
