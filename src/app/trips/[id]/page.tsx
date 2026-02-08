@@ -38,19 +38,13 @@ export default async function TripDetailPage({ params }: ParamsProps) {
           users={users}
         />
       </div>
-      <TripPaymentDialog
-        payment={null}
-        currencies={currencies}
-        users={users}
-      >
+      <TripPaymentDialog payment={null} currencies={currencies} users={users}>
         <Button
           asChild
           size="icon"
           className="fixed bottom-25 right-4 z-10 size-14 rounded-full shadow-xl shadow-primary/10"
         >
-          <Link href="#" className="flex items-center justify-center">
-            <Plus className="size-7" strokeWidth={2.5} />
-          </Link>
+          <Plus className="p-s" />
         </Button>
       </TripPaymentDialog>
 
