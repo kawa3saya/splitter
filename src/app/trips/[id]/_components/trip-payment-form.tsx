@@ -42,7 +42,7 @@ import { updateCreateTripPaymentSchema } from "@/app/trips/[id]/_schema/update-c
 import { formatDate } from "@/utils/date";
 import { useUpdateCreatePayment } from "@/app/trips/[id]/_hooks/use-update-create-payment";
 
-export function TripPaymentFormDialog({
+export function TripPaymentForm({
   payment,
   currencies,
   users,
