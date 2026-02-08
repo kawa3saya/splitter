@@ -72,6 +72,7 @@ export type Database = {
         Row: {
           amount_owed: number;
           created_at: string | null;
+          deleted_at: string | null;
           id: string;
           payment_id: string;
           user_id: string;
@@ -79,6 +80,7 @@ export type Database = {
         Insert: {
           amount_owed: number;
           created_at?: string | null;
+          deleted_at?: string | null;
           id?: string;
           payment_id: string;
           user_id: string;
@@ -86,6 +88,7 @@ export type Database = {
         Update: {
           amount_owed?: number;
           created_at?: string | null;
+          deleted_at?: string | null;
           id?: string;
           payment_id?: string;
           user_id?: string;
@@ -112,6 +115,7 @@ export type Database = {
           amount: number;
           created_at: string | null;
           currency_id: string;
+          deleted_at: string | null;
           description: string;
           id: string;
           paid_at: string;
@@ -123,6 +127,7 @@ export type Database = {
           amount: number;
           created_at?: string | null;
           currency_id: string;
+          deleted_at?: string | null;
           description: string;
           id?: string;
           paid_at?: string;
@@ -134,6 +139,7 @@ export type Database = {
           amount?: number;
           created_at?: string | null;
           currency_id?: string;
+          deleted_at?: string | null;
           description?: string;
           id?: string;
           paid_at?: string;

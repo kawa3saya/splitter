@@ -25,6 +25,7 @@ export async function getTripDetail(
     `,
     )
     .eq("id", id)
+    .is("payments.deleted_at", null)
     .order("paid_at", { referencedTable: "payments", ascending: false })
     .single();
 
@@ -53,6 +54,7 @@ export async function getTripDetail(
       user_id: payment.user_id,
       amount: payment.amount,
       currency_id: payment.currency_id,
+      deleted_at: payment.deleted_at ?? null,
       description: payment.description,
       created_at: payment.created_at,
       paid_at: payment.paid_at,
