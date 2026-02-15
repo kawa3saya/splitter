@@ -124,7 +124,7 @@ export function FormCreateTrip() {
                                     field.onChange([...current, code]);
                                   } else {
                                     field.onChange(
-                                      current.filter((c) => c !== code)
+                                      current.filter((c) => c !== code),
                                     );
                                   }
                                 }}

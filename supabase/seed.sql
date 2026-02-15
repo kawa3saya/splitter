@@ -38,9 +38,9 @@ DECLARE
   copenhagen_payment_id UUID;
 BEGIN
   -- 1. トリップを作成
-  INSERT INTO trips (title, base_currency) VALUES ('European Adventure', 'EUR') RETURNING id INTO european_trip_id;
-  INSERT INTO trips (title, base_currency) VALUES ('London Business Trip', 'GBP') RETURNING id INTO london_trip_id;
-  INSERT INTO trips (title, base_currency) VALUES ('Nordic Journey', 'SEK') RETURNING id INTO nordic_trip_id;
+  INSERT INTO trips (title, base_currency) VALUES ('European Adventure', 'eur') RETURNING id INTO european_trip_id;
+  INSERT INTO trips (title, base_currency) VALUES ('London Business Trip', 'gbp') RETURNING id INTO london_trip_id;
+  INSERT INTO trips (title, base_currency) VALUES ('Nordic Journey', 'sek') RETURNING id INTO nordic_trip_id;
   
   -- 2. ユーザーを作成
   INSERT INTO users (name, trip_id) VALUES ('Alice Johnson', european_trip_id) RETURNING id INTO alice_id;
@@ -56,17 +56,17 @@ BEGIN
   
   -- 3. 通貨を作成
   -- European Adventure currencies
-  INSERT INTO currencies (trip_id, code) VALUES (european_trip_id, 'EUR') RETURNING id INTO eur_currency_id;
-  INSERT INTO currencies (trip_id, code) VALUES (european_trip_id, 'GBP') RETURNING id INTO gbp_currency_id;
-  INSERT INTO currencies (trip_id, code) VALUES (european_trip_id, 'CZK') RETURNING id INTO czk_currency_id;
+  INSERT INTO currencies (trip_id, code) VALUES (european_trip_id, 'eur') RETURNING id INTO eur_currency_id;
+  INSERT INTO currencies (trip_id, code) VALUES (european_trip_id, 'gbp') RETURNING id INTO gbp_currency_id;
+  INSERT INTO currencies (trip_id, code) VALUES (european_trip_id, 'czk') RETURNING id INTO czk_currency_id;
   
   -- London Business Trip currencies
-  INSERT INTO currencies (trip_id, code) VALUES (london_trip_id, 'GBP') RETURNING id INTO gbp_currency_id;
+  INSERT INTO currencies (trip_id, code) VALUES (london_trip_id, 'gbp') RETURNING id INTO gbp_currency_id;
   
   -- Nordic Journey currencies
-  INSERT INTO currencies (trip_id, code) VALUES (nordic_trip_id, 'SEK') RETURNING id INTO sek_currency_id;
-  INSERT INTO currencies (trip_id, code) VALUES (nordic_trip_id, 'NOK') RETURNING id INTO nok_currency_id;
-  INSERT INTO currencies (trip_id, code) VALUES (nordic_trip_id, 'DKK') RETURNING id INTO dkk_currency_id;
+  INSERT INTO currencies (trip_id, code) VALUES (nordic_trip_id, 'sek') RETURNING id INTO sek_currency_id;
+  INSERT INTO currencies (trip_id, code) VALUES (nordic_trip_id, 'nok') RETURNING id INTO nok_currency_id;
+  INSERT INTO currencies (trip_id, code) VALUES (nordic_trip_id, 'dkk') RETURNING id INTO dkk_currency_id;
   
   -- 4. 支払いを作成
   -- European Adventure payments

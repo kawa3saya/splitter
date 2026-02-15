@@ -8,6 +8,6 @@ import { CurrencyCodeType } from "@/types/currency-code-type";
  * @returns Emoji string, or empty string if the code is not in CURRENCIES
  */
 export function getCurrencyEmoji(code: string): string {
-  const key = code.toLowerCase() as CurrencyCodeType;
+  const key = code as CurrencyCodeType;
   return CURRENCIES[key]?.emoji ?? "";
 }
