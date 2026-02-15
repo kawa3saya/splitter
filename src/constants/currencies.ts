@@ -145,3 +145,5 @@ export const CURRENCIES = {
   zar: { name: "South African Rand", emoji: "🇿🇦" },
   zmw: { name: "Zambian Kwacha", emoji: "🇿🇲" },
 } as const;
+
+export const CURRENCY_CODES = Object.keys(CURRENCIES);
