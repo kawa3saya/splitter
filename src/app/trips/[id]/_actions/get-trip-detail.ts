@@ -59,6 +59,8 @@ export async function getTripDetail(
       created_at: payment.created_at,
       paid_at: payment.paid_at,
       updated_at: payment.updated_at,
+      rate_to_base: payment.rate_to_base ?? null,
+      amount_in_base_currency: payment.amount_in_base_currency ?? null,
       user_name: payment.users.name,
       currency_code: payment.currencies.code,
       debtors: payment.debtors ?? [],
