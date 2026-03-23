@@ -69,39 +69,39 @@ BEGIN
   INSERT INTO currencies (trip_id, code) VALUES (nordic_trip_id, 'dkk') RETURNING id INTO dkk_currency_id;
   
   -- 4. 支払いを作成
-  -- European Adventure payments
-  INSERT INTO payments (trip_id, user_id, amount, currency_id, description) 
-  VALUES (european_trip_id, alice_id, 120.50, eur_currency_id, 'Hotel in Paris') 
+  -- European Adventure payments (base_currency: eur)
+  INSERT INTO payments (trip_id, user_id, amount, currency_id, description, rate_to_base, amount_in_base_currency)
+  VALUES (european_trip_id, alice_id, 120.50, eur_currency_id, 'Hotel in Paris', 1.0, 120.50)
   RETURNING id INTO hotel_payment_id;
-  
-  INSERT INTO payments (trip_id, user_id, amount, currency_id, description) 
-  VALUES (european_trip_id, bob_id, 45.00, gbp_currency_id, 'Lunch in London') 
+
+  INSERT INTO payments (trip_id, user_id, amount, currency_id, description, rate_to_base, amount_in_base_currency)
+  VALUES (european_trip_id, bob_id, 45.00, gbp_currency_id, 'Lunch in London', 1.17, 52.65)
   RETURNING id INTO lunch_payment_id;
-  
-  INSERT INTO payments (trip_id, user_id, amount, currency_id, description) 
-  VALUES (european_trip_id, carol_id, 600.00, czk_currency_id, 'Souvenirs in Prague') 
+
+  INSERT INTO payments (trip_id, user_id, amount, currency_id, description, rate_to_base, amount_in_base_currency)
+  VALUES (european_trip_id, carol_id, 600.00, czk_currency_id, 'Souvenirs in Prague', 0.04, 24.00)
   RETURNING id INTO souvenirs_payment_id;
-  
-  -- London Business Trip payments
-  INSERT INTO payments (trip_id, user_id, amount, currency_id, description) 
-  VALUES (london_trip_id, david_id, 80.00, gbp_currency_id, 'Dinner') 
+
+  -- London Business Trip payments (base_currency: gbp)
+  INSERT INTO payments (trip_id, user_id, amount, currency_id, description, rate_to_base, amount_in_base_currency)
+  VALUES (london_trip_id, david_id, 80.00, gbp_currency_id, 'Dinner', 1.0, 80.00)
   RETURNING id INTO dinner_payment_id;
-  
-  INSERT INTO payments (trip_id, user_id, amount, currency_id, description) 
-  VALUES (london_trip_id, emma_id, 20.00, gbp_currency_id, 'Coffee') 
+
+  INSERT INTO payments (trip_id, user_id, amount, currency_id, description, rate_to_base, amount_in_base_currency)
+  VALUES (london_trip_id, emma_id, 20.00, gbp_currency_id, 'Coffee', 1.0, 20.00)
   RETURNING id INTO coffee_payment_id;
-  
-  -- Nordic Journey payments
-  INSERT INTO payments (trip_id, user_id, amount, currency_id, description) 
-  VALUES (nordic_trip_id, alice_nordic_id, 500.00, sek_currency_id, 'Accommodation in Stockholm') 
+
+  -- Nordic Journey payments (base_currency: sek)
+  INSERT INTO payments (trip_id, user_id, amount, currency_id, description, rate_to_base, amount_in_base_currency)
+  VALUES (nordic_trip_id, alice_nordic_id, 500.00, sek_currency_id, 'Accommodation in Stockholm', 1.0, 500.00)
   RETURNING id INTO stockholm_payment_id;
-  
-  INSERT INTO payments (trip_id, user_id, amount, currency_id, description) 
-  VALUES (nordic_trip_id, bob_nordic_id, 300.00, nok_currency_id, 'Dinner in Oslo') 
+
+  INSERT INTO payments (trip_id, user_id, amount, currency_id, description, rate_to_base, amount_in_base_currency)
+  VALUES (nordic_trip_id, bob_nordic_id, 300.00, nok_currency_id, 'Dinner in Oslo', 1.02, 306.00)
   RETURNING id INTO oslo_payment_id;
-  
-  INSERT INTO payments (trip_id, user_id, amount, currency_id, description) 
-  VALUES (nordic_trip_id, carol_nordic_id, 400.00, dkk_currency_id, 'Transportation in Copenhagen') 
+
+  INSERT INTO payments (trip_id, user_id, amount, currency_id, description, rate_to_base, amount_in_base_currency)
+  VALUES (nordic_trip_id, carol_nordic_id, 400.00, dkk_currency_id, 'Transportation in Copenhagen', 1.55, 620.00)
   RETURNING id INTO copenhagen_payment_id;
   
   -- 5. 債務者を作成
