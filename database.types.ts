@@ -7,7 +7,6 @@ export type Json =
   | Json[];
 
 // TODO: MergeDeepを利用しinsertとupdate時に型チェックを行うこと(https://supabase.com/docs/guides/api/rest/generating-types#defining-custom-json-types)
-
 export type Database = {
   graphql_public: {
     Tables: {
@@ -113,36 +112,42 @@ export type Database = {
       payments: {
         Row: {
           amount: number;
+          amount_in_base_currency: number | null;
           created_at: string | null;
           currency_id: string;
           deleted_at: string | null;
           description: string;
           id: string;
           paid_at: string;
+          rate_to_base: number | null;
           trip_id: string;
           updated_at: string | null;
           user_id: string;
         };
         Insert: {
           amount: number;
+          amount_in_base_currency?: number | null;
           created_at?: string | null;
           currency_id: string;
           deleted_at?: string | null;
           description: string;
           id?: string;
           paid_at?: string;
+          rate_to_base?: number | null;
           trip_id: string;
           updated_at?: string | null;
           user_id: string;
         };
         Update: {
           amount?: number;
+          amount_in_base_currency?: number | null;
           created_at?: string | null;
           currency_id?: string;
           deleted_at?: string | null;
           description?: string;
           id?: string;
           paid_at?: string;
+          rate_to_base?: number | null;
           trip_id?: string;
           updated_at?: string | null;
           user_id?: string;
