@@ -16,10 +16,12 @@ import { PencilIcon } from "lucide-react";
 import { DeletePaymentDialog } from "@/app/trips/[id]/_components/delete-payment-dialog";
 
 export function TripPaymentCard({
+  baseCurrency,
   payments,
   currencies,
   users,
 }: {
+  baseCurrency: string;
   payments: PaymentWithDetailsType[];
   currencies: CurrencyType[];
   users: UserType[];
@@ -56,6 +58,7 @@ export function TripPaymentCard({
               </CardDescription>
             </div>
             <TripPaymentDialog
+              baseCurrency={baseCurrency}
               payment={payment}
               currencies={currencies}
               users={users}

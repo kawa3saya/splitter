@@ -11,6 +11,7 @@ export function useUpdateCreatePayment() {
   const router = useRouter();
 
   const submitTrip = async (
+    baseCurrency: string,
     formData: UpdateCreateTripPaymentSchemaType,
     isUpdate = false,
     paymentId?: string | null,
@@ -31,9 +32,9 @@ export function useUpdateCreatePayment() {
     try {
       setLoading(true);
       if (isUpdate && paymentId) {
-        await updatePayment(paymentId, formData);
+        await updatePayment(baseCurrency, paymentId, formData);
       } else {
-        await createPayment(formData);
+        await createPayment(baseCurrency, formData);
       }
       toast.success("Payment saved successfully", { position: "top-center" });
       router.refresh();

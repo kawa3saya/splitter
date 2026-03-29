@@ -11,6 +11,7 @@ export async function getExchangeRate(
   from: string,
   to: string,
 ): Promise<number> {
+  // APIはcodeを大文字でしか受け取らない(参考：https://frankfurter.dev/)
   const fromUpper = from.toUpperCase();
   const toUpper = to.toUpperCase();
   const params = `?from=${fromUpper}&to=${toUpper}`;
