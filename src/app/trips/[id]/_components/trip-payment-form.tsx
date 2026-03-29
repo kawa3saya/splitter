@@ -43,12 +43,14 @@ import { formatDate } from "@/utils/date";
 import { useUpdateCreatePayment } from "@/app/trips/[id]/_hooks/use-update-create-payment";
 
 export function TripPaymentForm({
+  baseCurrency,
   payment,
   currencies,
   users,
   open = true,
   onOpenChange,
 }: {
+  baseCurrency: string;
   currencies: CurrencyType[];
   payment: PaymentWithDetailsType | null;
   users: UserType[];
@@ -128,7 +130,7 @@ export function TripPaymentForm({
   }, [open, reset]);
 
   const onSubmit = async (data: UpdateCreateTripPaymentSchemaType) => {
-    await submitTrip(data, !!payment, payment?.id ?? null);
+    await submitTrip(baseCurrency, data, !!payment, payment?.id ?? null);
     onOpenChange(false);
   };
 

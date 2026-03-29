@@ -33,12 +33,18 @@ export default async function TripDetailPage({ params }: ParamsProps) {
           <span className="pl-xxs">{getCurrencyEmoji(trip.base_currency)}</span>
         </p>
         <TripPaymentCard
+          baseCurrency={trip.base_currency}
           payments={payments}
           currencies={currencies}
           users={users}
         />
       </div>
-      <TripPaymentDialog payment={null} currencies={currencies} users={users}>
+      <TripPaymentDialog
+        baseCurrency={trip.base_currency}
+        payment={null}
+        currencies={currencies}
+        users={users}
+      >
         <Button
           asChild
           size="icon"
