@@ -2,11 +2,38 @@
 
 import { supabase } from "@/lib/supabase";
 import { UpdateCreateTripPaymentSchemaType } from "@/app/trips/[id]/_types/update-create-trip-payment-schema-type";
+import { getExchangeRate } from "@/utils/get-exchange-rate";
 
 export async function updatePayment(
+  baseCurrency: string,
   id: string,
   data: UpdateCreateTripPaymentSchemaType,
 ) {
+  // Fetch payment currency code
+  const currencyResult = await supabase
+    .from("currencies")
+    .select("code")
+    .eq("id", data.currency_id)
+    .single();
+
+  if (currencyResult.error) throw new Error(currencyResult.error.message);
+
+  const paymentCurrency = currencyResult.data.code;
+
+  // Convert paid_at to UTC date string (YYYY-MM-DD) for Frankfurter API
+  const utcDate = data.paid_at.toISOString().slice(0, 10);
+
+  let rateToBase: number | null = null;
+  let amountInBaseCurrency: number | null = null;
+
+  if (paymentCurrency !== baseCurrency) {
+    rateToBase = await getExchangeRate(utcDate, paymentCurrency, baseCurrency);
+    amountInBaseCurrency = Math.round(data.amount * rateToBase * 100) / 100;
+  } else {
+    rateToBase = 1;
+    amountInBaseCurrency = data.amount;
+  }
+
   // Update payment
   const { error: updateError } = await supabase
     .from("payments")
@@ -16,6 +43,8 @@ export async function updatePayment(
       currency_id: data.currency_id,
       description: data.description,
       paid_at: data.paid_at.toISOString(),
+      rate_to_base: rateToBase,
+      amount_in_base_currency: amountInBaseCurrency,
     })
     .eq("id", id);
 
