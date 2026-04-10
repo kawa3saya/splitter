@@ -6,6 +6,7 @@ const ALLOWED_PATTERNS = [
   (pathname: string) => pathname === "/trips/new",
   (pathname: string) => /^\/trips\/[^/]+\/share$/.test(pathname),
   (pathname: string) => /^\/trips\/[^/]+\/edit$/.test(pathname),
+  (pathname: string) => /^\/trips\/[^/]+\/settlement$/.test(pathname),
   (pathname: string) => /^\/trips\/[^/]+$/.test(pathname),
 ];
 

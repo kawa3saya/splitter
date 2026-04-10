@@ -60,7 +60,7 @@ export default async function TripDetailPage({ params }: ParamsProps) {
           variant="default"
           className="w-full text-base font-bold"
         >
-          <Link href="#">SHOW SETTLEMENT</Link>
+          <Link href={`/trips/${id}/settlement`}>SHOW SETTLEMENT</Link>
         </Button>
       </div>
     </>
