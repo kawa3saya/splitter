@@ -71,10 +71,13 @@ export async function updatePayment(
 
   // Insert debtors to update with split amount
   const amountOwed = data.amount / data.debtors.length;
+  const amountOwedInBase =
+    Math.round((amountInBaseCurrency! / data.debtors.length) * 100) / 100;
   const debtorsToInsert = data.debtors.map((debtor) => ({
     payment_id: id,
     user_id: debtor.user_id,
     amount_owed: amountOwed,
+    amount_owed_in_base: amountOwedInBase,
   }));
 
   if (debtorsToInsert.length > 0) {
