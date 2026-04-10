@@ -5,7 +5,7 @@ import { FeaturesCarousel } from "@/app/_components/features-carousel";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-start gap-10 p-l bg-gradient-to-b from-primary to-white">
+    <div className="flex flex-col items-center justify-start gap-10 p-l bg-gradient-to-b from-primary">
       <p className="font-bold text-3xl text-white text-center sm:text-5xl text-shadow-lg">
         Split expenses
         <br />

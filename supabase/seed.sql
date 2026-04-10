@@ -105,24 +105,24 @@ BEGIN
   RETURNING id INTO copenhagen_payment_id;
   
   -- 5. 債務者を作成
-  -- European Adventure debts
-  INSERT INTO debtors (payment_id, user_id, amount_owed) VALUES (hotel_payment_id, bob_id, 40.17);
-  INSERT INTO debtors (payment_id, user_id, amount_owed) VALUES (hotel_payment_id, carol_id, 40.17);
-  INSERT INTO debtors (payment_id, user_id, amount_owed) VALUES (lunch_payment_id, alice_id, 22.50);
-  INSERT INTO debtors (payment_id, user_id, amount_owed) VALUES (lunch_payment_id, carol_id, 22.50);
-  INSERT INTO debtors (payment_id, user_id, amount_owed) VALUES (souvenirs_payment_id, alice_id, 300.00);
-  INSERT INTO debtors (payment_id, user_id, amount_owed) VALUES (souvenirs_payment_id, bob_id, 300.00);
-  
-  -- London Business Trip debts
-  INSERT INTO debtors (payment_id, user_id, amount_owed) VALUES (dinner_payment_id, emma_id, 40.00);
-  INSERT INTO debtors (payment_id, user_id, amount_owed) VALUES (coffee_payment_id, david_id, 10.00);
-  
-  -- Nordic Journey debts
-  INSERT INTO debtors (payment_id, user_id, amount_owed) VALUES (stockholm_payment_id, bob_nordic_id, 250.00);
-  INSERT INTO debtors (payment_id, user_id, amount_owed) VALUES (stockholm_payment_id, carol_nordic_id, 250.00);
-  INSERT INTO debtors (payment_id, user_id, amount_owed) VALUES (oslo_payment_id, alice_nordic_id, 150.00);
-  INSERT INTO debtors (payment_id, user_id, amount_owed) VALUES (oslo_payment_id, carol_nordic_id, 150.00);
-  INSERT INTO debtors (payment_id, user_id, amount_owed) VALUES (copenhagen_payment_id, alice_nordic_id, 200.00);
-  INSERT INTO debtors (payment_id, user_id, amount_owed) VALUES (copenhagen_payment_id, bob_nordic_id, 200.00);
+  -- European Adventure debts (base: eur)
+  INSERT INTO debtors (payment_id, user_id, amount_owed, amount_owed_in_base) VALUES (hotel_payment_id, bob_id, 40.17, 40.17);       -- eur→eur, rate 1.0
+  INSERT INTO debtors (payment_id, user_id, amount_owed, amount_owed_in_base) VALUES (hotel_payment_id, carol_id, 40.17, 40.17);     -- eur→eur, rate 1.0
+  INSERT INTO debtors (payment_id, user_id, amount_owed, amount_owed_in_base) VALUES (lunch_payment_id, alice_id, 22.50, 26.33);     -- gbp→eur, rate 1.17
+  INSERT INTO debtors (payment_id, user_id, amount_owed, amount_owed_in_base) VALUES (lunch_payment_id, carol_id, 22.50, 26.33);     -- gbp→eur, rate 1.17
+  INSERT INTO debtors (payment_id, user_id, amount_owed, amount_owed_in_base) VALUES (souvenirs_payment_id, alice_id, 300.00, 12.00); -- czk→eur, rate 0.04
+  INSERT INTO debtors (payment_id, user_id, amount_owed, amount_owed_in_base) VALUES (souvenirs_payment_id, bob_id, 300.00, 12.00);  -- czk→eur, rate 0.04
+
+  -- London Business Trip debts (base: gbp)
+  INSERT INTO debtors (payment_id, user_id, amount_owed, amount_owed_in_base) VALUES (dinner_payment_id, emma_id, 40.00, 40.00);     -- gbp→gbp, rate 1.0
+  INSERT INTO debtors (payment_id, user_id, amount_owed, amount_owed_in_base) VALUES (coffee_payment_id, david_id, 10.00, 10.00);    -- gbp→gbp, rate 1.0
+
+  -- Nordic Journey debts (base: sek)
+  INSERT INTO debtors (payment_id, user_id, amount_owed, amount_owed_in_base) VALUES (stockholm_payment_id, bob_nordic_id, 250.00, 250.00);     -- sek→sek, rate 1.0
+  INSERT INTO debtors (payment_id, user_id, amount_owed, amount_owed_in_base) VALUES (stockholm_payment_id, carol_nordic_id, 250.00, 250.00);   -- sek→sek, rate 1.0
+  INSERT INTO debtors (payment_id, user_id, amount_owed, amount_owed_in_base) VALUES (oslo_payment_id, alice_nordic_id, 150.00, 153.00);        -- nok→sek, rate 1.02
+  INSERT INTO debtors (payment_id, user_id, amount_owed, amount_owed_in_base) VALUES (oslo_payment_id, carol_nordic_id, 150.00, 153.00);        -- nok→sek, rate 1.02
+  INSERT INTO debtors (payment_id, user_id, amount_owed, amount_owed_in_base) VALUES (copenhagen_payment_id, alice_nordic_id, 200.00, 310.00);  -- dkk→sek, rate 1.55
+  INSERT INTO debtors (payment_id, user_id, amount_owed, amount_owed_in_base) VALUES (copenhagen_payment_id, bob_nordic_id, 200.00, 310.00);    -- dkk→sek, rate 1.55
   
 END $$;
