@@ -3,11 +3,15 @@
 import { supabase } from "@/lib/supabase";
 import { EditTripSchemaType } from "@/app/trips/[id]/edit/_type/edit-trip-schema-type";
 
-export async function updateTrip(formData: EditTripSchemaType) {
+export async function updateTrip(tripId: string, formData: EditTripSchemaType) {
+  if (formData.id !== tripId) {
+    throw new Error("Trip mismatch");
+  }
+
   const { data: trip, error: tripError } = await supabase
     .from("trips")
     .update({ title: formData.title })
-    .eq("id", formData.id)
+    .eq("id", tripId)
     .select()
     .single();
 
@@ -18,7 +22,7 @@ export async function updateTrip(formData: EditTripSchemaType) {
   const codes = formData.currencies ?? [];
   if (codes.length > 0) {
     const currenciesData = codes.map((code) => ({
-      trip_id: formData.id,
+      trip_id: tripId,
       code,
     }));
     const { error: currenciesError } = await supabase
@@ -34,7 +38,7 @@ export async function updateTrip(formData: EditTripSchemaType) {
   if (memberNames.length > 0) {
     const usersData = memberNames.map((member) => ({
       name: member.name.trim(),
-      trip_id: trip.id,
+      trip_id: tripId,
     }));
     const { error: usersError } = await supabase
       .from("users")

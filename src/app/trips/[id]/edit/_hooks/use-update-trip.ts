@@ -1,4 +1,4 @@
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { EditTripSchemaType } from "@/app/trips/[id]/edit/_type/edit-trip-schema-type";
@@ -7,6 +7,8 @@ import { updateTrip } from "@/app/trips/[id]/edit/_actions/update-trip";
 export function useUpdateTrip() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const params = useParams<{ id: string }>();
+  const tripId = params.id;
 
   const handleUpdateTrip = async (formData: EditTripSchemaType) => {
     if (!formData.title || !formData.currencies || !formData.member_names) {
@@ -16,7 +18,7 @@ export function useUpdateTrip() {
 
     try {
       setLoading(true);
-      const result = await updateTrip(formData);
+      const result = await updateTrip(tripId, formData);
       toast.success("Trip updated successfully", { position: "top-center" });
       router.replace(`/trips/${result.trip.id}`);
     } catch (error) {
