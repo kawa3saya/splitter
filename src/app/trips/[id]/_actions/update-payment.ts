@@ -17,14 +17,18 @@ export async function updatePayment(
     throw new Error("Trip mismatch");
   }
 
-  // Verify the payment belongs to this trip
+  // Verify the payment belongs to this trip and is not soft-deleted
   const existing = await supabase
     .from("payments")
-    .select("trip_id")
+    .select("trip_id, deleted_at")
     .eq("id", paymentId)
     .single();
 
-  if (existing.error || existing.data.trip_id !== tripId) {
+  if (
+    existing.error ||
+    existing.data.trip_id !== tripId ||
+    existing.data.deleted_at !== null
+  ) {
     throw new Error("Payment not found");
   }
 
@@ -85,7 +89,7 @@ export async function updatePayment(
     .eq("trip_id", tripId);
 
   if (updateError) {
-    throw new Error(updateError.message);
+    throw new Error("Failed to save payment");
   }
 
   // Delete existing debtors and re-insert with new split
@@ -95,7 +99,7 @@ export async function updatePayment(
     .eq("payment_id", paymentId);
 
   if (deleteError) {
-    throw new Error(deleteError.message);
+    throw new Error("Failed to save payment");
   }
 
   const amountOwed = parsed.amount / parsed.debtors.length;
@@ -114,7 +118,7 @@ export async function updatePayment(
       .insert(debtorsToInsert);
 
     if (insertError) {
-      throw new Error(insertError.message);
+      throw new Error("Failed to save payment");
     }
   }
 
