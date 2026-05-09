@@ -31,8 +31,8 @@ export async function getSettlement(
       .single(),
   ]);
 
-  if (paymentsResult.error) throw new Error(paymentsResult.error.message);
-  if (tripResult.error) throw new Error(tripResult.error.message);
+  if (paymentsResult.error) throw new Error("Failed to load settlement");
+  if (tripResult.error) throw new Error("Failed to load settlement");
 
   const payments = paymentsResult.data;
   const baseCurrency = tripResult.data.base_currency;
@@ -50,7 +50,7 @@ export async function getSettlement(
     .select("id, name")
     .in("id", userIds);
 
-  if (usersError) throw new Error(usersError.message);
+  if (usersError) throw new Error("Failed to load settlement");
 
   const nameOf = Object.fromEntries((users ?? []).map((user) => [user.id, user.name]));
 
