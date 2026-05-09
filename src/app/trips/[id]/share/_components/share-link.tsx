@@ -11,11 +11,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+
 export function ShareLink({ tripId }: { tripId: string }) {
   const [copied, setCopied] = useState(false);
+  const tripUrl = `${SITE_URL}/trips/${tripId}`;
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(`http://localhost:3000/trips/${tripId}`);
+    navigator.clipboard.writeText(tripUrl);
     setCopied(true);
   };
 
@@ -30,7 +33,7 @@ export function ShareLink({ tripId }: { tripId: string }) {
         <FieldLabel>Shareable Link</FieldLabel>
         <div className="flex flex-col md:flex-row gap-2 justify-start">
           <Input
-            value={`http://localhost:3000/trips/${tripId}`}
+            value={tripUrl}
             readOnly
             className="cursor-pointer"
           />
