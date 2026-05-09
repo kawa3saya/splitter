@@ -17,7 +17,7 @@ export async function createTrip(formData: FormCreateTripSchemaType) {
     .single();
 
   if (tripError) {
-    throw new Error(tripError.message);
+    throw new Error("Failed to create trip");
   }
 
   const currenciesData = parsed.currencies.map((currency) => ({
@@ -31,7 +31,7 @@ export async function createTrip(formData: FormCreateTripSchemaType) {
     .select();
 
   if (currenciesError) {
-    throw new Error(currenciesError.message);
+    throw new Error("Failed to create trip");
   }
 
   const users = parsed.member_names.map((member) => ({
@@ -45,7 +45,7 @@ export async function createTrip(formData: FormCreateTripSchemaType) {
     .select();
 
   if (usersError) {
-    throw new Error(usersError.message);
+    throw new Error("Failed to create trip");
   }
 
   return { trip, users: createdUsers, currencies: createdCurrencies };

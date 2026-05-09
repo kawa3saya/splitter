@@ -73,7 +73,7 @@ export async function createPayment(
     .single();
 
   if (insertError) {
-    throw new Error(insertError.message);
+    throw new Error("Failed to save payment");
   }
 
   const amountOwed = parsed.amount / parsed.debtors.length;
@@ -91,6 +91,6 @@ export async function createPayment(
     .insert(debtorsToInsert);
 
   if (debtorsError) {
-    throw new Error(debtorsError.message);
+    throw new Error("Failed to save payment");
   }
 }

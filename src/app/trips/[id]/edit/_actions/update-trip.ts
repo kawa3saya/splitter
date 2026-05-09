@@ -19,7 +19,7 @@ export async function updateTrip(tripId: string, formData: EditTripSchemaType) {
     .single();
 
   if (tripError) {
-    throw new Error(tripError.message);
+    throw new Error("Failed to update trip");
   }
 
   const codes = parsed.currencies ?? [];
@@ -33,7 +33,7 @@ export async function updateTrip(tripId: string, formData: EditTripSchemaType) {
       .upsert(currenciesData, { onConflict: "trip_id,code" });
 
     if (currenciesError) {
-      throw new Error(currenciesError.message);
+      throw new Error("Failed to update trip");
     }
   }
 
@@ -48,7 +48,7 @@ export async function updateTrip(tripId: string, formData: EditTripSchemaType) {
       .insert(usersData);
 
     if (usersError) {
-      throw new Error(usersError.message);
+      throw new Error("Failed to update trip");
     }
   }
 

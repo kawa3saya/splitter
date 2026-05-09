@@ -23,7 +23,7 @@ export async function deletePayment(tripId: string, paymentId: string) {
     .eq("trip_id", tripId);
 
   if (paymentError) {
-    throw new Error(paymentError.message);
+    throw new Error("Failed to delete payment");
   }
 
   const { error: debtorsError } = await supabase
@@ -32,6 +32,6 @@ export async function deletePayment(tripId: string, paymentId: string) {
     .eq("payment_id", paymentId);
 
   if (debtorsError) {
-    throw new Error(debtorsError.message);
+    throw new Error("Failed to delete payment");
   }
 }
