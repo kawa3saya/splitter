@@ -1,7 +1,7 @@
 "use client";
 import { UpdateCreateTripPaymentSchemaType } from "@/app/trips/[id]/_types/update-create-trip-payment-schema-type";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { updatePayment } from "@/app/trips/[id]/_actions/update-payment";
 import { createPayment } from "@/app/trips/[id]/_actions/create-payment";
@@ -9,6 +9,8 @@ import { createPayment } from "@/app/trips/[id]/_actions/create-payment";
 export function useUpdateCreatePayment() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const params = useParams<{ id: string }>();
+  const tripId = params.id;
 
   const submitTrip = async (
     baseCurrency: string,
@@ -32,9 +34,9 @@ export function useUpdateCreatePayment() {
     try {
       setLoading(true);
       if (isUpdate && paymentId) {
-        await updatePayment(baseCurrency, paymentId, formData);
+        await updatePayment(tripId, baseCurrency, paymentId, formData);
       } else {
-        await createPayment(baseCurrency, formData);
+        await createPayment(tripId, baseCurrency, formData);
       }
       toast.success("Payment saved successfully", { position: "top-center" });
       router.refresh();

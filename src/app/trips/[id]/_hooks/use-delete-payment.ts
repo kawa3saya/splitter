@@ -1,4 +1,4 @@
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { deletePayment } from "@/app/trips/[id]/_actions/delete-payment";
@@ -6,11 +6,13 @@ import { deletePayment } from "@/app/trips/[id]/_actions/delete-payment";
 export function useDeletePayment() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const params = useParams<{ id: string }>();
+  const tripId = params.id;
 
   const handleDeletePayment = async (paymentId: string) => {
     setLoading(true);
     try {
-      await deletePayment(paymentId);
+      await deletePayment(tripId, paymentId);
       toast.success("Payment deleted successfully", { position: "top-center" });
       router.refresh();
     } catch (error) {

@@ -5,17 +5,31 @@ import { UpdateCreateTripPaymentSchemaType } from "@/app/trips/[id]/_types/updat
 import { getExchangeRate } from "@/utils/get-exchange-rate";
 
 export async function createPayment(
+  tripId: string,
   baseCurrency: string,
   data: UpdateCreateTripPaymentSchemaType,
 ) {
-  // Fetch trip's base_currency and payment currency code
+  if (data.trip_id !== tripId) {
+    throw new Error("Trip mismatch");
+  }
+
+  if (data.debtors.length === 0) {
+    throw new Error("Debtors are required");
+  }
+
+  if (data.amount <= 0) {
+    throw new Error("Amount must be greater than 0");
+  }
+
+  // Fetch payment currency code, scoped to this trip
   const currencyResult = await supabase
     .from("currencies")
     .select("code")
     .eq("id", data.currency_id)
+    .eq("trip_id", tripId)
     .single();
 
-  if (currencyResult.error) throw new Error(currencyResult.error.message);
+  if (currencyResult.error) throw new Error("Invalid currency");
 
   const paymentCurrency = currencyResult.data.code;
 
@@ -36,7 +50,7 @@ export async function createPayment(
   const { data: payment, error: insertError } = await supabase
     .from("payments")
     .insert({
-      trip_id: data.trip_id,
+      trip_id: tripId,
       user_id: data.paid_user_id,
       amount: data.amount,
       currency_id: data.currency_id,
@@ -50,14 +64,6 @@ export async function createPayment(
 
   if (insertError) {
     throw new Error(insertError.message);
-  }
-
-  if (data.debtors.length === 0) {
-    throw new Error("Debtors are required");
-  }
-
-  if (data.amount <= 0) {
-    throw new Error("Amount must be greater than 0");
   }
 
   const amountOwed = data.amount / data.debtors.length;

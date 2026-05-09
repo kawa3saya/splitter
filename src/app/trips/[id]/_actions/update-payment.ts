@@ -5,18 +5,43 @@ import { UpdateCreateTripPaymentSchemaType } from "@/app/trips/[id]/_types/updat
 import { getExchangeRate } from "@/utils/get-exchange-rate";
 
 export async function updatePayment(
+  tripId: string,
   baseCurrency: string,
-  id: string,
+  paymentId: string,
   data: UpdateCreateTripPaymentSchemaType,
 ) {
-  // Fetch payment currency code
+  if (data.trip_id !== tripId) {
+    throw new Error("Trip mismatch");
+  }
+
+  if (data.debtors.length === 0) {
+    throw new Error("Debtors are required");
+  }
+
+  if (data.amount <= 0) {
+    throw new Error("Amount must be greater than 0");
+  }
+
+  // Verify the payment belongs to this trip
+  const existing = await supabase
+    .from("payments")
+    .select("trip_id")
+    .eq("id", paymentId)
+    .single();
+
+  if (existing.error || existing.data.trip_id !== tripId) {
+    throw new Error("Payment not found");
+  }
+
+  // Fetch payment currency code, scoped to this trip
   const currencyResult = await supabase
     .from("currencies")
     .select("code")
     .eq("id", data.currency_id)
+    .eq("trip_id", tripId)
     .single();
 
-  if (currencyResult.error) throw new Error(currencyResult.error.message);
+  if (currencyResult.error) throw new Error("Invalid currency");
 
   const paymentCurrency = currencyResult.data.code;
 
@@ -34,7 +59,7 @@ export async function updatePayment(
     amountInBaseCurrency = data.amount;
   }
 
-  // Update payment
+  // Update payment (scoped to tripId for defense-in-depth)
   const { error: updateError } = await supabase
     .from("payments")
     .update({
@@ -46,35 +71,28 @@ export async function updatePayment(
       rate_to_base: rateToBase,
       amount_in_base_currency: amountInBaseCurrency,
     })
-    .eq("id", id);
+    .eq("id", paymentId)
+    .eq("trip_id", tripId);
 
   if (updateError) {
     throw new Error(updateError.message);
   }
 
-  // Delete debtors to update
-  if (data.debtors.length === 0) {
-    throw new Error("Debtors are required");
-  }
-
-  if (data.amount <= 0) {
-    throw new Error("Amount must be greater than 0");
-  }
+  // Delete existing debtors and re-insert with new split
   const { error: deleteError } = await supabase
     .from("debtors")
     .delete()
-    .eq("payment_id", id);
+    .eq("payment_id", paymentId);
 
   if (deleteError) {
     throw new Error(deleteError.message);
   }
 
-  // Insert debtors to update with split amount
   const amountOwed = data.amount / data.debtors.length;
   const amountOwedInBase =
     Math.round((amountInBaseCurrency! / data.debtors.length) * 100) / 100;
   const debtorsToInsert = data.debtors.map((debtor) => ({
-    payment_id: id,
+    payment_id: paymentId,
     user_id: debtor.user_id,
     amount_owed: amountOwed,
     amount_owed_in_base: amountOwedInBase,
