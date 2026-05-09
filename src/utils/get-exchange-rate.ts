@@ -14,12 +14,15 @@ export async function getExchangeRate(
   // APIはcodeを大文字でしか受け取らない(参考：https://frankfurter.dev/)
   const fromUpper = from.toUpperCase();
   const toUpper = to.toUpperCase();
-  const params = `?from=${fromUpper}&to=${toUpper}`;
+  const params = new URLSearchParams({ from: fromUpper, to: toUpper });
+  const encodedDate = encodeURIComponent(date);
 
   // Try the specified date first; if 404 (future/unavailable date), fall back to latest
-  let res = await fetch(`https://api.frankfurter.dev/v1/${date}${params}`);
+  let res = await fetch(
+    `https://api.frankfurter.dev/v1/${encodedDate}?${params}`,
+  );
   if (res.status === 404) {
-    res = await fetch(`https://api.frankfurter.dev/v1/latest${params}`);
+    res = await fetch(`https://api.frankfurter.dev/v1/latest?${params}`);
   }
 
   if (!res.ok) {
