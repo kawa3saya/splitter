@@ -2,15 +2,18 @@
 
 import { supabase } from "@/lib/supabase";
 import { EditTripSchemaType } from "@/app/trips/[id]/edit/_type/edit-trip-schema-type";
+import { editTripSchema } from "@/app/trips/[id]/edit/_schema/edit-trip-schema";
 
 export async function updateTrip(tripId: string, formData: EditTripSchemaType) {
-  if (formData.id !== tripId) {
+  const parsed = editTripSchema.parse(formData);
+
+  if (parsed.id !== tripId) {
     throw new Error("Trip mismatch");
   }
 
   const { data: trip, error: tripError } = await supabase
     .from("trips")
-    .update({ title: formData.title })
+    .update({ title: parsed.title })
     .eq("id", tripId)
     .select()
     .single();
@@ -19,7 +22,7 @@ export async function updateTrip(tripId: string, formData: EditTripSchemaType) {
     throw new Error(tripError.message);
   }
 
-  const codes = formData.currencies ?? [];
+  const codes = parsed.currencies ?? [];
   if (codes.length > 0) {
     const currenciesData = codes.map((code) => ({
       trip_id: tripId,
@@ -34,7 +37,7 @@ export async function updateTrip(tripId: string, formData: EditTripSchemaType) {
     }
   }
 
-  const memberNames = formData.member_names ?? [];
+  const memberNames = parsed.member_names ?? [];
   if (memberNames.length > 0) {
     const usersData = memberNames.map((member) => ({
       name: member.name.trim(),
