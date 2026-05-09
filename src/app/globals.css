@@ -19,7 +19,8 @@
   --spacing-l: 2rem;
   --spacing-xl: 2.5rem;
   --spacing-header: 4rem;
-  --spacing-content: calc(100dvh - var(--spacing-header));
+  --spacing-footer: 3rem; 
+  --spacing-content: calc(100dvh - var(--spacing-header) - var(--spacing-footer));
   --shadow-top: 0 -4px 6px -1px rgb(0 0 0 / 0.1), 0 -2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
