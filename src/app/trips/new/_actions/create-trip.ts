@@ -2,13 +2,16 @@
 
 import { supabase } from "@/lib/supabase";
 import { FormCreateTripSchemaType } from "@/app/trips/new/_types/form-create-trip-schema-type";
+import { formCreateTripSchema } from "@/app/trips/new/_schema/form-create-trip-schema";
 
 export async function createTrip(formData: FormCreateTripSchemaType) {
+  const parsed = formCreateTripSchema.parse(formData);
+
   const { data: trip, error: tripError } = await supabase
     .from("trips")
     .insert({
-      title: formData.title,
-      base_currency: formData.base_currency,
+      title: parsed.title,
+      base_currency: parsed.base_currency,
     })
     .select()
     .single();
@@ -17,7 +20,7 @@ export async function createTrip(formData: FormCreateTripSchemaType) {
     throw new Error(tripError.message);
   }
 
-  const currenciesData = formData.currencies.map((currency) => ({
+  const currenciesData = parsed.currencies.map((currency) => ({
     trip_id: trip.id,
     code: currency,
   }));
@@ -31,7 +34,7 @@ export async function createTrip(formData: FormCreateTripSchemaType) {
     throw new Error(currenciesError.message);
   }
 
-  const users = formData.member_names.map((member) => ({
+  const users = parsed.member_names.map((member) => ({
     name: member.name.trim(),
     trip_id: trip.id,
   }));

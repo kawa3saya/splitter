@@ -2,6 +2,7 @@
 
 import { supabase } from "@/lib/supabase";
 import { UpdateCreateTripPaymentSchemaType } from "@/app/trips/[id]/_types/update-create-trip-payment-schema-type";
+import { updateCreateTripPaymentSchema } from "@/app/trips/[id]/_schema/update-create-trip-payment-schema";
 import { getExchangeRate } from "@/utils/get-exchange-rate";
 
 export async function createPayment(
@@ -9,21 +10,15 @@ export async function createPayment(
   baseCurrency: string,
   data: UpdateCreateTripPaymentSchemaType,
 ) {
-  if (data.trip_id !== tripId) {
+  const parsed = updateCreateTripPaymentSchema.parse(data);
+
+  if (parsed.trip_id !== tripId) {
     throw new Error("Trip mismatch");
-  }
-
-  if (data.debtors.length === 0) {
-    throw new Error("Debtors are required");
-  }
-
-  if (data.amount <= 0) {
-    throw new Error("Amount must be greater than 0");
   }
 
   // Verify all referenced users belong to this trip
   const userIds = Array.from(
-    new Set([data.paid_user_id, ...data.debtors.map((d) => d.user_id)]),
+    new Set([parsed.paid_user_id, ...parsed.debtors.map((d) => d.user_id)]),
   );
   const usersResult = await supabase
     .from("users")
@@ -40,7 +35,7 @@ export async function createPayment(
   const currencyResult = await supabase
     .from("currencies")
     .select("code")
-    .eq("id", data.currency_id)
+    .eq("id", parsed.currency_id)
     .eq("trip_id", tripId)
     .single();
 
@@ -49,28 +44,28 @@ export async function createPayment(
   const paymentCurrency = currencyResult.data.code;
 
   // Convert paid_at to UTC date string (YYYY-MM-DD) for Frankfurter API
-  const utcDate = data.paid_at.toISOString().slice(0, 10);
+  const utcDate = parsed.paid_at.toISOString().slice(0, 10);
 
   let rateToBase: number | null = null;
   let amountInBaseCurrency: number | null = null;
 
   if (paymentCurrency !== baseCurrency) {
     rateToBase = await getExchangeRate(utcDate, paymentCurrency, baseCurrency);
-    amountInBaseCurrency = Math.round(data.amount * rateToBase * 100) / 100;
+    amountInBaseCurrency = Math.round(parsed.amount * rateToBase * 100) / 100;
   } else {
     rateToBase = 1;
-    amountInBaseCurrency = data.amount;
+    amountInBaseCurrency = parsed.amount;
   }
 
   const { data: payment, error: insertError } = await supabase
     .from("payments")
     .insert({
       trip_id: tripId,
-      user_id: data.paid_user_id,
-      amount: data.amount,
-      currency_id: data.currency_id,
-      description: data.description,
-      paid_at: data.paid_at.toISOString(),
+      user_id: parsed.paid_user_id,
+      amount: parsed.amount,
+      currency_id: parsed.currency_id,
+      description: parsed.description,
+      paid_at: parsed.paid_at.toISOString(),
       rate_to_base: rateToBase,
       amount_in_base_currency: amountInBaseCurrency,
     })
@@ -81,10 +76,10 @@ export async function createPayment(
     throw new Error(insertError.message);
   }
 
-  const amountOwed = data.amount / data.debtors.length;
+  const amountOwed = parsed.amount / parsed.debtors.length;
   const amountOwedInBase =
-    Math.round((amountInBaseCurrency! / data.debtors.length) * 100) / 100;
-  const debtorsToInsert = data.debtors.map((debtor) => ({
+    Math.round((amountInBaseCurrency! / parsed.debtors.length) * 100) / 100;
+  const debtorsToInsert = parsed.debtors.map((debtor) => ({
     payment_id: payment.id,
     user_id: debtor.user_id,
     amount_owed: amountOwed,
