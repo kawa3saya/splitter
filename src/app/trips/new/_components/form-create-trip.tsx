@@ -175,8 +175,8 @@ export function FormCreateTrip() {
                 >
                   <CirclePlus className="size-4" /> Add another member
                 </Button>
-                {errors.member_names?.message && (
-                  <FieldError errors={[errors.member_names]} />
+                {errors.member_names?.root?.message && (
+                  <FieldError errors={[errors.member_names.root]} />
                 )}
               </Field>
             </FieldGroup>
