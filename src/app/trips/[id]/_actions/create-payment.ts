@@ -21,6 +21,21 @@ export async function createPayment(
     throw new Error("Amount must be greater than 0");
   }
 
+  // Verify all referenced users belong to this trip
+  const userIds = Array.from(
+    new Set([data.paid_user_id, ...data.debtors.map((d) => d.user_id)]),
+  );
+  const usersResult = await supabase
+    .from("users")
+    .select("id")
+    .eq("trip_id", tripId)
+    .in("id", userIds);
+
+  if (usersResult.error) throw new Error("Failed to verify users");
+  if (!usersResult.data || usersResult.data.length !== userIds.length) {
+    throw new Error("Invalid user");
+  }
+
   // Fetch payment currency code, scoped to this trip
   const currencyResult = await supabase
     .from("currencies")
