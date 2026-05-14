@@ -1,0 +1,20 @@
+/**
+ * Cloudflare Workers configuration for Next.js (via @opennextjs/cloudflare).
+ *
+ * `main` and `assets.directory` point at the output produced by
+ * `opennextjs-cloudflare build`, which must run before deploy.
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "splitter",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-05-03",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": ".open-next/assets"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
