@@ -26,10 +26,10 @@ export default async function TripDetailPage({ params }: ParamsProps) {
 
   return (
     <>
-      <div className="p-s flex flex-col gap-s min-h-content pb-40">
+      <div className="p-s flex flex-col gap-s min-h-content pb-24">
         <TripCard trip={trip} users={users} />
         <p className="font-bold">
-          Base currency: {trip.base_currency}
+          Base currency: {trip.base_currency.toUpperCase()}
           <span className="pl-xxs">{getCurrencyEmoji(trip.base_currency)}</span>
         </p>
         <TripPaymentCard
@@ -54,11 +54,12 @@ export default async function TripDetailPage({ params }: ParamsProps) {
         </Button>
       </TripPaymentDialog>
 
-      <div className="fixed bottom-0 left-0 right-0 z-10 bg-background p-4 shadow-top">
+      <div className="fixed bottom-0 left-0 right-0 z-10 bg-background p-xs shadow-top">
         <Button
           asChild
           variant="default"
-          className="w-full text-base font-bold"
+          size="sm"
+          className="w-full text-sm font-bold"
         >
           <Link href={`/trips/${id}/settlement`}>SHOW SETTLEMENT</Link>
         </Button>
