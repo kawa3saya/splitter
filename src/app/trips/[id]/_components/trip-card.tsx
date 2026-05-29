@@ -11,20 +11,20 @@ export function TripCard({
   users: UserType[];
 }) {
   return (
-    <Card className="bg-primary">
+    <Card className="bg-primary gap-xxs p-s">
       <CardContent className="flex flex-col gap-xxs">
-        <div className="flex justify-between text-sm text-background font-bold">
+        <div className="flex justify-between text-xs text-background font-bold">
           <p>Trip Summary</p>
           <Link
             href={`/trips/${trip.id}/edit`}
-            className="flex items-center gap-xxs underline cursor-pointer font-s"
+            className="flex items-center gap-xxs underline cursor-pointer"
           >
             <p>EDIT</p>
-            <Settings className="size-5 text-background" strokeWidth={2.5} />
+            <Settings className="size-4 text-background" strokeWidth={2.5} />
           </Link>
         </div>
-        <p className="text-3xl font-bold text-white">{trip.title}</p>
-        <p className="text-sm text-background font-bold">
+        <p className="text-base font-bold text-white break-words">{trip.title}</p>
+        <p className="text-xs text-background font-bold">
           Shared by {users.length} members
         </p>
       </CardContent>
