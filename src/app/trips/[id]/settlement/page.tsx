@@ -17,7 +17,7 @@ export default async function SettlementPage({ params }: ParamsProps) {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">Settlement Summary</h1>
+      <h1 className="px-s text-2xl font-bold">Settlement Summary</h1>
       <Tabs defaultValue="settlements">
         <TabsList variant="line">
           <TabsTrigger value="settlements" className="text-sm font-bold">
