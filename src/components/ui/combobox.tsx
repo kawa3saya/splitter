@@ -235,8 +235,7 @@ function ComboboxChips({
       className={cn(
         "flex min-h-9 flex-wrap items-center gap-1.5 rounded-lg border border-gray bg-base px-2.5 py-1.5 text-sm shadow-xs transition-[color,box-shadow] outline-none",
         "focus-within:border-primary focus-within:outline-0 focus-within:ring-[4px] focus-within:ring-background",
-        "dark:border-gray-700 dark:bg-gray-800",
-        "has-aria-invalid:border-destructive has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40",
+        "has-aria-invalid:border-destructive has-aria-invalid:ring-destructive/20",
         "has-data-[slot=combobox-chip]:px-1.5",
         className,
       )}
