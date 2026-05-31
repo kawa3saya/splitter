@@ -321,7 +321,7 @@ export function TripPaymentForm({
                   <PopoverTrigger asChild>
                     <Button
                       type="button"
-                      className="hover:bg-white flex justify-start h-14 shadow-none w-full min-w-0 resize-none overflow-hidden rounded-lg border border-gray bg-base p-s text-left text-base font-normal leading-normal outline-none transition-[color,box-shadow] text-[var(--text-color-base)] placeholder:text-gray-500 focus:border-primary focus:outline-0 focus:ring-[4px] focus:ring-background dark:border-gray-700 dark:bg-gray-800 dark:text-white aria-invalid:border-destructive cursor-pointer"
+                      className="hover:bg-white flex justify-start h-14 shadow-none w-full min-w-0 resize-none overflow-hidden rounded-lg border border-gray bg-base p-s text-left text-base font-normal leading-normal outline-none transition-[color,box-shadow] text-[var(--text-color-base)] placeholder:text-gray-500 focus:border-primary focus:outline-0 focus:ring-[4px] focus:ring-background aria-invalid:border-destructive cursor-pointer"
                     >
                       <CalendarIcon className="size-4" />
                       {field.value
