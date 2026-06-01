@@ -15,7 +15,7 @@ export default function TermsPage() {
       <p className="text-sm text-gray-500 mb-8">最終更新日：2026年5月10日</p>
 
       <p className="mb-8 leading-relaxed">
-        本利用規約（以下「本規約」といいます）は、Splitter
+        本利用規約（以下「本規約」といいます）は、Seppaaan
         運営（以下「運営者」といいます）が提供するアプリケーション（以下「本サービス」といいます）の利用条件を定めるものです。本サービスを利用する全ての方（以下「利用者」といいます）は、本規約に同意したうえで本サービスを利用するものとします。本サービスを利用した時点で、利用者は本規約のすべての条項に同意したものとみなします。
       </p>
 
@@ -234,7 +234,7 @@ export default function TermsPage() {
         本サービスに関するお問い合わせは、以下のフォームよりご連絡ください。
       </p>
       <ul className="list-disc pl-6 space-y-1 leading-relaxed">
-        <li>運営者名：Splitter 運営</li>
+        <li>運営者名：Seppaaan 運営</li>
         <li>
           お問い合わせフォーム：
           <a
