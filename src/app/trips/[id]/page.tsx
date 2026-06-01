@@ -1,7 +1,7 @@
 import { getTripDetail } from "@/app/trips/[id]/_actions/get-trip-detail";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TripCard } from "@/app/trips/[id]/_components/trip-card";
 import { TripPaymentCard } from "@/app/trips/[id]/_components/trip-payment-card";
@@ -28,10 +28,21 @@ export default async function TripDetailPage({ params }: ParamsProps) {
     <>
       <div className="p-s flex flex-col gap-s min-h-content pb-24">
         <TripCard trip={trip} users={users} />
-        <p className="font-bold">
-          Base currency: {trip.base_currency.toUpperCase()}
-          <span className="pl-xxs">{getCurrencyEmoji(trip.base_currency)}</span>
-        </p>
+        <div className="flex justify-between items-center">
+          <p className="font-bold">
+            Base currency: {trip.base_currency.toUpperCase()}
+            <span className="pl-xxs">
+              {getCurrencyEmoji(trip.base_currency)}
+            </span>
+          </p>
+          <Link
+            href={`/trips/${id}/share`}
+            className="flex items-center gap-xs font-bold text-primary"
+          >
+            <Share2 className="size-4" />
+            <span className="underline">Invite</span>
+          </Link>
+        </div>
         <TripPaymentCard
           baseCurrency={trip.base_currency}
           payments={payments}

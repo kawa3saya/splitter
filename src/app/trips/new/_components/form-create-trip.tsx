@@ -153,20 +153,20 @@ export function FormCreateTrip() {
                       </ComboboxChips>
                       <ComboboxContent className="mb-xs" anchor={anchor}>
                         <ComboboxEmpty>No items found.</ComboboxEmpty>
-                        <ComboboxList className="flex flex-col gap-xs">
+                        <ComboboxList className="flex flex-col gap-xxs">
                           {(code: string) => {
                             const data = CURRENCIES[code as CurrencyCodeType];
                             return (
                               <ComboboxItem
                                 key={code}
                                 value={code}
-                                className="flex items-center justify-between hover:bg-gray-100 selected:bg-gray-100 p-xs hover:cursor-pointer hover:bg-background"
+                                className="flex items-center justify-between hover:bg-gray-100 selected:bg-gray-100 p-xxs text-xs gap-xxs hover:cursor-pointer hover:bg-background"
                               >
-                                <div className="flex items-center gap-s">
-                                  <p className="text-3xl">
+                                <div className="flex items-center gap-xxs">
+                                  <p className="text-m">
                                     {getCurrencyEmoji(code)}
                                   </p>
-                                  <div className="flex flex-col">
+                                  <div className="flex items-center gap-xxs">
                                     <p className="font-bold">
                                       {code.toUpperCase()}
                                     </p>

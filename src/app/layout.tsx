@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Splitter",
+  title: "Seppaaan",
   description: "Track group expenses and settle up across currencies",
 };
 
@@ -33,7 +33,7 @@ export default function RootLayout({
       >
         <Header />
         <Main>{children}</Main>
-        <Toaster />
+        <Toaster position="top-center" />
         <Footer />
       </body>
     </html>
