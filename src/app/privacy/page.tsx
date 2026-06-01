@@ -15,7 +15,7 @@ export default function PrivacyPage() {
       <p className="text-sm text-gray-500 mb-8">最終更新日：2026年5月10日</p>
 
       <p className="mb-8 leading-relaxed">
-        Splitter
+        Seppaaan
         運営（以下「運営者」といいます）は、運営者が提供するアプリケーション（以下「本サービス」といいます）における利用者の個人情報および個人関連情報（以下併せて「個人情報等」といいます）の取扱いについて、以下のとおりプライバシーポリシー（以下「本ポリシー」といいます）を定めます。
       </p>
 
@@ -218,7 +218,7 @@ export default function PrivacyPage() {
         本ポリシーまたは個人情報等の取扱いに関するお問い合わせは、以下のフォームよりご連絡ください。
       </p>
       <ul className="list-disc pl-6 space-y-1 leading-relaxed">
-        <li>運営者名：Splitter 運営</li>
+        <li>運営者名：Seppaaan 運営</li>
         <li>
           お問い合わせフォーム：
           <a

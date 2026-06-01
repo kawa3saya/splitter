@@ -8,7 +8,7 @@ export function Header() {
             <span className="text-white font-extrabold text-xl">s</span>
           </div>
           <h1 className="text-xl font-extrabold tracking-tight text-app-text text-base">
-            splitter
+            Seppaaan
           </h1>
         </div>
       </Link>
