@@ -8,7 +8,7 @@ export function Footer() {
   if (pathname !== "/") return null;
 
   return (
-    <div className="flex items-center justify-center gap-s p-s text-sm text-gray-500">
+    <div className="flex items-center justify-center gap-s p-s text-sm text-gray-500 bg-white">
       <Link href="/terms" className="underline">
         Terms of Service
       </Link>
