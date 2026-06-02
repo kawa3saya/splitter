@@ -17,6 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://splitter.seppaaan.workers.dev"),
   title: "Seppaaan - Split expenses easily and fairly",
   description: "Track group spending, split across currencies, and settle up in seconds — no sign-up required.",
   keywords: ["split expenses", "group spending", "currency converter", "trip expenses", "settle up"],
