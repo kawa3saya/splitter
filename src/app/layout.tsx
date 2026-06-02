@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
+import { headers } from "next/headers";
 import "./globals.css";
 import { Header } from "@/components/ui/header";
 import { Footer } from "@/components/ui/footer";
@@ -16,8 +17,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://splitter.seppaaan.workers.dev"),
+export async function generateMetadata(): Promise<Metadata> {
+  const headersList = await headers();
+  const host = headersList.get("host") || "splitter.seppaaan.workers.dev";
+  const protocol = headersList.get("x-forwarded-proto") || "https";
+  const baseUrl = `${protocol}://${host}`;
+
+  return {
+  metadataBase: new URL(baseUrl),
   title: "Seppaaan - Split expenses easily and fairly",
   description: "Track group spending, split across currencies, and settle up in seconds — no sign-up required.",
   keywords: ["split expenses", "group spending", "currency converter", "trip expenses", "settle up"],
@@ -73,7 +80,8 @@ export const metadata: Metadata = {
       operatingSystem: "Web",
     }),
   },
-};
+  };
+}
 
 export default function RootLayout({
   children,
