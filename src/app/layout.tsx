@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { headers } from "next/headers";
@@ -70,11 +70,6 @@ export async function generateMetadata(): Promise<Metadata> {
         "max-snippet": -1,
       },
     },
-    viewport: {
-      width: "device-width",
-      initialScale: 1,
-      maximumScale: 5,
-    },
     alternates: {
       canonical: "https://splitter.seppaaan.workers.dev",
     },
@@ -92,6 +87,12 @@ export async function generateMetadata(): Promise<Metadata> {
     },
   };
 }
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
 
 export default function RootLayout({
   children,
