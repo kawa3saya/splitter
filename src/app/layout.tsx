@@ -70,6 +70,9 @@ export async function generateMetadata(): Promise<Metadata> {
         "max-snippet": -1,
       },
     },
+    icons: {
+      icon: "/favicon.ico",
+    },
     alternates: {
       canonical: "https://splitter.seppaaan.workers.dev",
     },
