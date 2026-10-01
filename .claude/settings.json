@@ -39,7 +39,7 @@
         "objects.githubusercontent.com",
         "github.com",
         "*.supabase.co",
-        "api.frankfurter.app"
+        "api.frankfurter.dev"
       ],
       "deniedDomains": [
         "*:22"
