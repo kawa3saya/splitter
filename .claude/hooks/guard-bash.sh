@@ -8,8 +8,18 @@ fi
 
 cmd=$(jq -r '.tool_input.command // ""') || exit 2   # 不正 JSON も fail-closed に
 
-# ガードレール自体（設定・フック）の変更を禁止
-if printf '%s' "$cmd" | grep -qE '\.claude/(settings|hooks)'; then
+# ガードレール自体（設定・フック）と .gitignore の「変更」のみ禁止。読み取りや git add/diff は許可
+GUARD_PATH='(\.claude/(settings|hooks)|\.gitignore)'
+CMDPOS='(^|[|;&(]|[[:space:]])'
+SQ=$'\047'
+W_REDIR=">[[:space:]]*[\"${SQ}]?[^[:space:]|;&]*${GUARD_PATH}"
+W_VERB="${CMDPOS}(tee|rm|mv|cp|chmod|chown|truncate|install|ln|patch|vim?|nano|git[[:space:]]+(checkout|restore|apply|clean))[[:space:]][^|;&]*${GUARD_PATH}"
+W_SEDI="${CMDPOS}sed[[:space:]][^|;&]*-i[^|;&]*${GUARD_PATH}"
+
+if printf '%s' "$cmd" | grep -qE "$GUARD_PATH" && {
+     printf '%s' "$cmd" | grep -qE "$W_REDIR" ||
+     printf '%s' "$cmd" | grep -qE "$W_VERB"  ||
+     printf '%s' "$cmd" | grep -qE "$W_SEDI"; }; then
   echo "ガードレール設定の変更は Claude からは行えません。手動で編集してください: $cmd" >&2
   exit 2
 fi
@@ -18,7 +28,7 @@ fi
 FORCE_PUSH=$'push([[:space:]]+[^|;&]*)?[[:space:]]+(--force(-with-lease)?([[:space:]]|$)|-[[:alnum:]]*f[[:alnum:]]*([[:space:]]|$))|push[[:space:]]+[^|;&]*[[:space:]]["\047]?[+][^[:space:]]+'
 
 # 本番・DB に影響する操作を禁止
-if printf '%s' "$cmd" | grep -qE '(wrangler|opennextjs-cloudflare)[[:space:]]+([^|;&]*[[:space:]])?deploy|npm[[:space:]]+run[[:space:]]+deploy|db[[:space:]]+(reset|push)|supabase[[:space:]]+migration[[:space:]]+up' \
+if printf '%s' "$cmd" | grep -qE '(wrangler|opennextjs-cloudflare)[[:space:]]+([^|;&]*[[:space:]])?deploy|(npm|pnpm|yarn|bun)[[:space:]]+(run[[:space:]]+)?([^|;&]*[[:space:]])?deploy([[:space:]]|$)|db[[:space:]]+(reset|push)|supabase[[:space:]]+migration[[:space:]]+up' \
   || printf '%s' "$cmd" | grep -qE "$FORCE_PUSH"; then
   echo "本番・DBに影響する操作なので手動で実行してください: $cmd" >&2
   exit 2

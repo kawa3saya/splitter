@@ -19,7 +19,10 @@
       "Bash(git push:*)",
       "Bash(git commit:*)",
       "Bash(npx supabase:*)",
-      "Edit(./supabase/migrations/**)"
+      "Edit(./supabase/migrations/**)",
+      "Write(./supabase/migrations/**)",
+      "Edit(./.gitignore)",
+      "Write(./.gitignore)"
     ],
     "allow": [
       "Bash(npm run lint)",
@@ -38,6 +41,7 @@
         "registry.npmjs.org",
         "objects.githubusercontent.com",
         "github.com",
+        "api.github.com",
         "*.supabase.co",
         "api.frankfurter.dev"
       ],
