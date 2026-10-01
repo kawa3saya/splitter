@@ -14,8 +14,12 @@ if printf '%s' "$cmd" | grep -qE '\.claude/(settings|hooks)'; then
   exit 2
 fi
 
+# force push 検出（引数順・結合フラグ・+refspec に対応。\047 は ' のエスケープ）
+FORCE_PUSH=$'push([[:space:]]+[^|;&]*)?[[:space:]]+(--force(-with-lease)?([[:space:]]|$)|-[[:alnum:]]*f[[:alnum:]]*([[:space:]]|$))|push[[:space:]]+[^|;&]*[[:space:]]["\047]?[+][^[:space:]]+'
+
 # 本番・DB に影響する操作を禁止
-if printf '%s' "$cmd" | grep -qE '(wrangler|opennextjs-cloudflare)[[:space:]]+([^|;&]*[[:space:]])?deploy|npm[[:space:]]+run[[:space:]]+deploy|db[[:space:]]+(reset|push)|push[[:space:]]+(--force|-f)|supabase[[:space:]]+migration[[:space:]]+up'; then
+if printf '%s' "$cmd" | grep -qE '(wrangler|opennextjs-cloudflare)[[:space:]]+([^|;&]*[[:space:]])?deploy|npm[[:space:]]+run[[:space:]]+deploy|db[[:space:]]+(reset|push)|supabase[[:space:]]+migration[[:space:]]+up' \
+  || printf '%s' "$cmd" | grep -qE "$FORCE_PUSH"; then
   echo "本番・DBに影響する操作なので手動で実行してください: $cmd" >&2
   exit 2
 fi
