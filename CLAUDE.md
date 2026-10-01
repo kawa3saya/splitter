@@ -10,7 +10,7 @@ Seppaaan (repo/worker name: `splitter`) is a no-sign-up group expense splitter f
 
 ```bash
 npm run dev         # Next dev server (Turbopack); initOpenNextCloudflareForDev() in next.config.ts wires Cloudflare bindings
-npm run build       # next build
+npm run build       # next build --turbopack
 npm run lint        # eslint (flat config, next/core-web-vitals + typescript)
 npm run preview     # OpenNext build + local Workers preview (closest to production)
 npm run deploy      # OpenNext build + deploy to Cloudflare
