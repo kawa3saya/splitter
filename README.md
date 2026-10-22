@@ -164,7 +164,7 @@ src/
   lib/supabase.ts             # 🔒 server-only Supabase client
   utils/get-exchange-rate.ts  # 💱 Frankfurter API client
 supabase/migrations/          # 🗄️  Database schema
-docs/                         # 📚 Privacy policy, terms, SEO guide
+docs/                         # 📚 Privacy policy, terms, SEO guide, screenshots
 ```
 
 ---
@@ -229,7 +229,7 @@ Browse the data in **Supabase Studio** at
 and debtors. Since trips are reached by UUID, grab one from Studio or the SQL editor:
 
 ```sql
-select id, name from trips;
+select id, title from trips;
 ```
 
 Then open `http://localhost:3000/trips/<id>`.

@@ -20,7 +20,7 @@ export default function Home() {
             <br />
             easily and <span className="text-primary">fairly</span>.
           </h1>
-          <p className="max-w-md text-base font-medium text-gray-500">
+          <p className="text-base font-medium text-gray-500">
             Track group spending, split across currencies, and settle up in
             seconds — no sign-up required.
           </p>
