@@ -24,11 +24,22 @@ if printf '%s' "$cmd" | grep -qE "$GUARD_PATH" && {
   exit 2
 fi
 
+# トークン終端。空白と行末だけでは --force-with-lease=origin/main、npm run deploy&&…、
+# bash -c "npm run deploy" が漏れるので、= と区切り子・クォート・閉じ括弧も終端扱いにする
+END="([[:space:]|;&)=\"${SQ}]|"'$)'
+
 # force push 検出（引数順・結合フラグ・+refspec に対応。\047 は ' のエスケープ）
-FORCE_PUSH=$'push([[:space:]]+[^|;&]*)?[[:space:]]+(--force(-with-lease)?([[:space:]]|$)|-[[:alnum:]]*f[[:alnum:]]*([[:space:]]|$))|push[[:space:]]+[^|;&]*[[:space:]]["\047]?[+][^[:space:]]+'
+FORCE_PUSH="push([[:space:]]+[^|;&]*)?[[:space:]]+(--force(-with-lease)?${END}|-[[:alnum:]]*f[[:alnum:]]*${END})|push[[:space:]]+[^|;&]*[[:space:]][\"${SQ}]?[+][^[:space:]]+"
+
+# デプロイ検出。opennextjs は bin 名 opennextjs-cloudflare とスコープ名
+# @opennextjs/cloudflare のどちらでも同じバイナリが起動するので両方見る。
+# npx の @version 付き指定（wrangler@latest など）も拾う
+DEPLOY_BIN="(wrangler|@?opennextjs[-/]cloudflare)(@[^[:space:]]+)?[[:space:]]+([^|;&]*[[:space:]])?deploy"
+DEPLOY_RUN="(npm|pnpm|yarn|bun)[[:space:]]+(run[[:space:]]+)?([^|;&]*[[:space:]])?deploy${END}"
+DB_OPS="db[[:space:]]+(reset|push)|supabase[[:space:]]+migration[[:space:]]+up"
 
 # 本番・DB に影響する操作を禁止
-if printf '%s' "$cmd" | grep -qE '(wrangler|opennextjs-cloudflare)[[:space:]]+([^|;&]*[[:space:]])?deploy|(npm|pnpm|yarn|bun)[[:space:]]+(run[[:space:]]+)?([^|;&]*[[:space:]])?deploy([[:space:]]|$)|db[[:space:]]+(reset|push)|supabase[[:space:]]+migration[[:space:]]+up' \
+if printf '%s' "$cmd" | grep -qE "${DEPLOY_BIN}|${DEPLOY_RUN}|${DB_OPS}" \
   || printf '%s' "$cmd" | grep -qE "$FORCE_PUSH"; then
   echo "本番・DBに影響する操作なので手動で実行してください: $cmd" >&2
   exit 2
