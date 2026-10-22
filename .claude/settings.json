@@ -22,8 +22,6 @@
       "Bash(. .env*)",
       "Edit(./.claude/**)",
       "Write(./.claude/**)",
-      "Edit(./.gitignore)",
-      "Write(./.gitignore)",
       "Bash(git push --force*)",
       "Bash(git push -f*)",
       "Bash(npm run deploy*)",
@@ -37,7 +35,9 @@
       "Bash(git commit:*)",
       "Bash(npx supabase:*)",
       "Edit(./supabase/migrations/**)",
-      "Write(./supabase/migrations/**)"
+      "Write(./supabase/migrations/**)",
+      "Edit(./.gitignore)",
+      "Write(./.gitignore)"
     ],
     "allow": [
       "Bash(npm run lint)",
