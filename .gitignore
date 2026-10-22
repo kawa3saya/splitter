@@ -40,6 +40,9 @@ yarn-error.log*
 .open-next/
 .wrangler
 cloudflare-env.d.ts
+# local secrets for `wrangler dev` / Workers preview
+.dev.vars
+.dev.vars.*
 
 # typescript
 *.tsbuildinfo
