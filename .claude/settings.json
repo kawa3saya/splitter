@@ -49,6 +49,9 @@
     ]
   },
   "sandbox": {
+    "filesystem": {
+    "allowRead": ["./.env.example"]
+    },
     "enabled": true,
     "autoAllowBashIfSandboxed": false,
     "network": {
