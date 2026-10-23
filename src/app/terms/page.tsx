@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { pageMetadata } from "@/utils/page-metadata";
+
+export const metadata = pageMetadata("/terms");
 
 export default function TermsPage() {
   return (

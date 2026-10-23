@@ -2,6 +2,9 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FeaturesCarousel } from "@/app/_components/features-carousel";
+import { pageMetadata } from "@/utils/page-metadata";
+
+export const metadata = pageMetadata("/");
 
 export default function Home() {
   return (

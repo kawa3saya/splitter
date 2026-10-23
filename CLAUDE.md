@@ -19,7 +19,7 @@ npm run cf-typegen  # regenerate cloudflare-env.d.ts from wrangler.jsonc
 
 There is no test suite. Verify changes with `npm run lint` and `npm run build` (type-checks).
 
-Required env (in `.env.local`, which Claude is denied from reading): `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`. Optional: `NEXT_PUBLIC_SITE_URL` overrides the canonical origin in `src/constants/site.ts` (metadata, robots, sitemap, JSON-LD); it defaults to the production Workers URL.
+Required env (in `.env.local`, which Claude is denied from reading): `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`. Optional: `NEXT_PUBLIC_SITE_URL` overrides the canonical origin in `src/constants/site.ts` (metadata, robots, sitemap, JSON-LD, shareable trip links); it defaults to the production Workers URL. Build absolute URLs with `siteUrl(path)` from that module so canonical tags and sitemap entries stay byte-identical.
 
 ## Architecture
 

@@ -1,32 +1,33 @@
 import { MetadataRoute } from "next";
-import { SITE_URL } from "@/constants/site";
+import { siteUrl } from "@/constants/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
 
-  // Trip pages are keyed by an unguessable UUID, so they are deliberately
-  // left out: the URL is the only access token a trip has.
+  // These URLs must match each page's canonical tag character for character,
+  // so both are built with siteUrl(). Trip pages are deliberately left out:
+  // the URL is the only access token a trip has.
   return [
     {
-      url: SITE_URL,
+      url: siteUrl("/"),
       lastModified,
       changeFrequency: "weekly",
       priority: 1,
     },
     {
-      url: `${SITE_URL}/trips/new`,
+      url: siteUrl("/trips/new"),
       lastModified,
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: `${SITE_URL}/terms`,
+      url: siteUrl("/terms"),
       lastModified,
       changeFrequency: "yearly",
       priority: 0.3,
     },
     {
-      url: `${SITE_URL}/privacy`,
+      url: siteUrl("/privacy"),
       lastModified,
       changeFrequency: "yearly",
       priority: 0.3,

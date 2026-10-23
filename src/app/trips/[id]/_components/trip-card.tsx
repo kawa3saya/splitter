@@ -23,7 +23,11 @@ export function TripCard({
             <Settings className="size-4 text-background" strokeWidth={2.5} />
           </Link>
         </div>
-        <p className="text-base font-bold text-white break-words">{trip.title}</p>
+        {/* The trip title is this page's only heading. Tailwind's preflight
+            resets heading sizes, so <h1> renders exactly as the <p> did. */}
+        <h1 className="text-base font-bold text-white break-words">
+          {trip.title}
+        </h1>
         <p className="text-xs text-background font-bold">
           Shared by {users.length} members
         </p>

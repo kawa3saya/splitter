@@ -6,12 +6,8 @@ import { Header } from "@/components/ui/header";
 import { Footer } from "@/components/ui/footer";
 import { Main } from "@/components/ui/main";
 import { StructuredData } from "@/app/_components/structured-data";
-import {
-  SITE_DESCRIPTION,
-  SITE_NAME,
-  SITE_TITLE,
-  SITE_URL,
-} from "@/constants/site";
+import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from "@/constants/site";
+import { OPEN_GRAPH_BASE } from "@/utils/page-metadata";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,22 +32,9 @@ export const metadata: Metadata = {
     "trip expenses",
     "settle up",
   ],
-  openGraph: {
-    title: SITE_TITLE,
-    description: SITE_DESCRIPTION,
-    url: SITE_URL,
-    siteName: SITE_NAME,
-    images: [
-      {
-        url: "/opengraph-image.png",
-        width: 1200,
-        height: 630,
-        alt: SITE_NAME,
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-  },
+  // Fallback for routes that set no metadata of their own — the trip pages.
+  // Their own URL must not leak here, so it stays the site root.
+  openGraph: { ...OPEN_GRAPH_BASE, url: SITE_URL },
   twitter: {
     card: "summary_large_image",
     title: SITE_TITLE,
@@ -72,9 +55,9 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
-  alternates: {
-    canonical: SITE_URL,
-  },
+  // No `alternates.canonical` here: it would be inherited by every page and
+  // declare each of them a duplicate of the home page. Each indexable route
+  // sets its own via pageMetadata().
 };
 
 export const viewport: Viewport = {

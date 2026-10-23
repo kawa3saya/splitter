@@ -68,7 +68,12 @@ export function FormCreateTrip() {
       <form onSubmit={handleSubmit(submitTrip)}>
         <FieldGroup>
           <FieldSet>
-            <FieldLegend>Create a new trip</FieldLegend>
+            {/* The legend is the page's title, so it carries the <h1>. A
+                <legend> may hold heading content, and Tailwind's preflight
+                resets heading sizes, so this renders unchanged. */}
+            <FieldLegend>
+              <h1>Create a new trip</h1>
+            </FieldLegend>
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="trip-name">Trip name</FieldLabel>
