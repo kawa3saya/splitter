@@ -25,6 +25,16 @@ export const SITE_DESCRIPTION =
   "Track group spending, split across currencies, and settle up in seconds — no sign-up required.";
 
 /**
+ * Last substantive change to the legal pages, as an ISO date.
+ *
+ * The pages display it and the sitemap reports it as their `lastmod`, so it
+ * is written once here instead of in both places where the two could drift.
+ * Update it whenever `docs/privacy-policy.md` or `docs/terms-of-service.md`
+ * changes.
+ */
+export const LEGAL_LAST_UPDATED = "2026-05-10";
+
+/**
  * Absolute URL for a route.
  *
  * Canonical tags and sitemap entries have to agree character for character,

@@ -17,6 +17,14 @@ export function StructuredData() {
     url: SITE_URL,
     applicationCategory: "UtilityApplication",
     operatingSystem: "Web",
+    // The app is free. This does not make the page eligible for Google's
+    // software app rich result — that needs aggregateRating or review, which
+    // we have no real data for and must not invent.
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
   };
 
   return (
