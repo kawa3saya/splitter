@@ -12,7 +12,7 @@ import {
   SITE_URL,
   TITLE_TEMPLATE,
 } from "@/constants/site";
-import { OPEN_GRAPH_BASE } from "@/utils/page-metadata";
+import { OPEN_GRAPH_BASE, TWITTER_BASE } from "@/utils/page-metadata";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,10 +51,9 @@ export const metadata: Metadata = {
     url: SITE_URL,
   },
   twitter: {
-    card: "summary_large_image",
+    ...TWITTER_BASE,
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
-    images: ["/opengraph-image.png"],
   },
   robots: {
     index: true,

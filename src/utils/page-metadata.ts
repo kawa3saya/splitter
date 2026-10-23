@@ -30,6 +30,19 @@ export const OPEN_GRAPH_BASE = {
 } satisfies Metadata["openGraph"];
 
 /**
+ * Twitter card fields shared by every route, on the same terms as
+ * OPEN_GRAPH_BASE: `title` and `description` are set per route.
+ *
+ * X prefers twitter:* over og:*, so leaving these at the site default while
+ * og carried the page's own title would show two different cards for the same
+ * page depending on where it was shared.
+ */
+export const TWITTER_BASE = {
+  card: "summary_large_image",
+  images: ["/opengraph-image.png"],
+} satisfies Metadata["twitter"];
+
+/**
  * Metadata for routes that must stay out of search results.
  *
  * A trip's URL is its only access token, so a trip page that reached an index
@@ -81,6 +94,11 @@ export function pageMetadata({
       title: fullTitle,
       description,
       url,
+    },
+    twitter: {
+      ...TWITTER_BASE,
+      title: fullTitle,
+      description,
     },
   };
 }

@@ -1,6 +1,6 @@
 # SEO対策ガイド
 
-このドキュメントは、SplitterプロジェクトのSEO（検索エンジン最適化）実装について記述します。
+このドキュメントは、SeppaaanプロジェクトのSEO（検索エンジン最適化）実装について記述します。
 
 ## 概要
 
@@ -10,58 +10,81 @@ SEO対策は、検索エンジンでの可視性を向上させ、オーガニ�
 
 ### 1. メタデータ設定
 
-#### 動的メタデータ（layout.tsx/page.tsx）
+サイト共通の値は `src/constants/site.ts`、ルートごとの組み立ては
+`src/utils/page-metadata.ts` に集約しています。URL は必ず `siteUrl()` から組んで
+ください（canonical と sitemap は完全一致している必要があるため）。
+
+#### ルートレイアウト（`src/app/layout.tsx`）
+
+サイト全体の既定値だけを持ちます。
 
 ```typescript
-import { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
+import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL, TITLE_TEMPLATE } from '@/constants/site'
+import { OPEN_GRAPH_BASE, TWITTER_BASE } from '@/utils/page-metadata'
 
 export const metadata: Metadata = {
-  title: 'Seppaaan - Split expenses easily and fairly',
-  description: 'Track group spending, split across currencies, and settle up in seconds — no sign-up required.',
-  keywords: ['split expenses', 'group spending', 'currency converter', 'trip expenses', 'settle up'],
-  openGraph: {
-    title: 'Seppaaan - Split expenses easily and fairly',
-    description: 'Track group spending, split across currencies, and settle up in seconds — no sign-up required.',
-    url: 'https://seppaaan.com',
-    siteName: 'Seppaaan',
-    images: [
-      {
-        url: '/opengraph-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'Seppaaan',
-      },
-    ],
-    locale: 'en_US',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Seppaaan - Split expenses easily and fairly',
-    description: 'Track group spending, split across currencies, and settle up in seconds',
-    images: ['/opengraph-image.png'],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-  },
-  alternates: {
-    canonical: 'https://splitter.seppaaan.workers.dev',
-  },
+  metadataBase: new URL(SITE_URL),
+  // default は自前のタイトルを持たないルート用。他は短いタイトルを指定し、
+  // template がサイト名を付ける
+  title: { default: SITE_TITLE, template: TITLE_TEMPLATE },
+  description: SITE_DESCRIPTION,
+  openGraph: { ...OPEN_GRAPH_BASE, title: SITE_TITLE, description: SITE_DESCRIPTION, url: SITE_URL },
+  twitter: { ...TWITTER_BASE, title: SITE_TITLE, description: SITE_DESCRIPTION },
+  robots: { index: true, follow: true, googleBot: { /* ... */ } },
+  // alternates.canonical はここに置かない（後述）
+}
+
+// viewport は metadata とは別の export（Next 14 以降）
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
 }
 ```
+
+**`alternates.canonical` をルートレイアウトに置かないこと。** 全ページに継承され、
+`/privacy` や `/terms` が「トップページの複製」と宣言することになり、インデックスから
+落ちます。
+
+**`generateMetadata` で `headers()` を呼ばないこと。** 全ルートが静的生成から外れます。
+オリジンは `SITE_URL`（`NEXT_PUBLIC_SITE_URL` で上書き可）から組んでください。
+
+#### 公開ページ（`src/app/*/page.tsx`）
+
+各ページが自分の canonical・title・description を持ちます。
+
+```typescript
+import { pageMetadata } from '@/utils/page-metadata'
+
+export const metadata = pageMetadata({
+  path: '/privacy',
+  title: 'プライバシーポリシー',   // 省略するとサイト既定のフルタイトル
+  description: '…',               // 省略するとサイト既定
+})
+```
+
+`pageMetadata()` が canonical / og / twitter をまとめて組み立てます。**Next の
+メタデータは shallow merge** なので、ページ側で `openGraph` や `twitter` を宣言すると
+レイアウトのオブジェクトごと置き換わります。共通フィールドが消えないよう
+`OPEN_GRAPH_BASE` / `TWITTER_BASE` を spread している理由がこれです。
+
+og:title には `title.template` が適用されない（document title にのみ適用される）ため、
+`pageMetadata()` が同じ template から明示的に組み立てています。
+
+#### 非公開ルート（`src/app/trips/[id]/layout.tsx`）
+
+トリップの URL 自体がアクセストークンなので、`/trips/[id]` 配下はレイアウトで
+まとめて noindex にしています。canonical と og:url も設定しません（URL が漏れるため）。
+
+```typescript
+import { PRIVATE_ROUTE_METADATA } from '@/utils/page-metadata'
+
+export const metadata: Metadata = PRIVATE_ROUTE_METADATA
+```
+
+robots.txt の `Disallow` ではなく meta タグを使うこと。クロールを禁止すると
+クローラーが noindex 自体を読めず、URL だけがインデックスに載り得ます。
 
 ### 2. OGP画像（動的生成）
 
@@ -113,7 +136,7 @@ export default async function Image() {
 ```
 # src/app/robots.ts
 import { MetadataRoute } from 'next'
-import { SITE_URL } from '@/constants/site'
+import { siteUrl } from '@/constants/site'
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -122,7 +145,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/api/',
     },
-    sitemap: `${SITE_URL}/sitemap.xml`,
+    sitemap: siteUrl('/sitemap.xml'),
   }
 }
 ```
@@ -132,19 +155,32 @@ export default function robots(): MetadataRoute.Robots {
 ```typescript
 // src/app/sitemap.ts
 import { MetadataRoute } from 'next'
-import { SITE_URL } from '@/constants/site'
+import { LEGAL_LAST_UPDATED, siteUrl } from '@/constants/site'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: SITE_URL,
-      lastModified: new Date(),
+      url: siteUrl('/'),
+      lastModified: new Date(),   // 静的ルートなのでビルド時刻
       changeFrequency: 'weekly',
       priority: 1,
+    },
+    {
+      url: siteUrl('/privacy'),
+      lastModified: new Date(LEGAL_LAST_UPDATED),   // 法務ページは実際の更新日
+      changeFrequency: 'yearly',
+      priority: 0.3,
     },
   ]
 }
 ```
+
+`<loc>` は各ページの canonical と完全一致している必要があるので、どちらも
+`siteUrl()` から組みます。
+
+法務ページだけ `lastModified` を分けているのは、ビルド時刻を報告すると
+「規約がデプロイのたびに変わる」と主張することになるためです。表示日と sitemap が
+ずれないよう、日付は `LEGAL_LAST_UPDATED` に一本化しています。
 
 トリップ詳細（`/trips/[id]`）は URL 自体がアクセストークンなので、サイトマップには
 含めません。
@@ -169,6 +205,7 @@ export function StructuredData() {
     url: SITE_URL,
     applicationCategory: 'UtilityApplication',
     operatingSystem: 'Web',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   }
 
   return (
@@ -180,10 +217,11 @@ export function StructuredData() {
 }
 ```
 
-### 6. メタデータは静的に保つ
-
-ルートレイアウトの `generateMetadata` で `headers()` を呼ぶと全ルートが静的生成から
-外れます。オリジンは `SITE_URL`（`NEXT_PUBLIC_SITE_URL` で上書き可）から組むこと。
+`offers` は「無料である」という事実の記述です。これだけでは Google の
+software app リッチリザルトの対象にはなりません（`aggregateRating` または `review` が
+必要）。実在しない評価を書くことは
+[構造化データのガイドライン](https://developers.google.com/search/docs/appearance/structured-data/sd-policies)
+で手動対策の対象とされているため、追加しないこと。
 
 ## キーワード戦略
 
