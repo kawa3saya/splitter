@@ -1,5 +1,16 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { pageMetadata } from "@/utils/page-metadata";
+import { LEGAL_LAST_UPDATED } from "@/constants/site";
+import { formatDateJa } from "@/utils/date";
+
+// Japanese, to match the page's own content.
+export const metadata = pageMetadata({
+  path: "/terms",
+  title: "利用規約",
+  description:
+    "Seppaaan の利用条件、禁止事項、免責事項、規約の変更について定めた利用規約です。",
+});
 
 export default function TermsPage() {
   return (
@@ -12,10 +23,12 @@ export default function TermsPage() {
       </Link>
 
       <h1 className="text-3xl font-bold mb-2">利用規約</h1>
-      <p className="text-sm text-gray-500 mb-8">最終更新日：2026年5月10日</p>
+      <p className="text-sm text-gray-500 mb-8">
+        最終更新日：{formatDateJa(LEGAL_LAST_UPDATED)}
+      </p>
 
       <p className="mb-8 leading-relaxed">
-        本利用規約（以下「本規約」といいます）は、Splitter
+        本利用規約（以下「本規約」といいます）は、Seppaaan
         運営（以下「運営者」といいます）が提供するアプリケーション（以下「本サービス」といいます）の利用条件を定めるものです。本サービスを利用する全ての方（以下「利用者」といいます）は、本規約に同意したうえで本サービスを利用するものとします。本サービスを利用した時点で、利用者は本規約のすべての条項に同意したものとみなします。
       </p>
 
@@ -234,7 +247,7 @@ export default function TermsPage() {
         本サービスに関するお問い合わせは、以下のフォームよりご連絡ください。
       </p>
       <ul className="list-disc pl-6 space-y-1 leading-relaxed">
-        <li>運営者名：Splitter 運営</li>
+        <li>運営者名：Seppaaan 運営</li>
         <li>
           お問い合わせフォーム：
           <a

@@ -12,7 +12,6 @@ import {
   FieldSet,
   FieldError,
 } from "@/components/ui/field";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -21,15 +20,30 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { CURRENCIES } from "@/constants/currencies";
-import { Label } from "@/components/ui/label";
+import { CURRENCIES, CURRENCY_CODES } from "@/constants/currencies";
+import { CurrencyCodeType } from "@/types/currency-code-type";
+import { getCurrencyEmoji } from "@/utils/get-currency-emoji";
+import { formatCurrencyCode } from "@/utils/format-currency-code";
 import { Button } from "@/components/ui/button";
+import {
+  Combobox,
+  ComboboxChip,
+  ComboboxChips,
+  ComboboxChipsInput,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxValue,
+  useComboboxAnchor,
+} from "@/components/ui/combobox";
 import { FormCreateTripSchemaType } from "@/app/trips/new/_types/form-create-trip-schema-type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formCreateTripSchema } from "@/app/trips/new/_schema/form-create-trip-schema";
 import { useCreateTrip } from "@/app/trips/new/_hooks/use-create-trip";
 export function FormCreateTrip() {
   const { submitTrip, loading } = useCreateTrip();
+  const anchor = useComboboxAnchor();
   const {
     register,
     control,
@@ -54,7 +68,12 @@ export function FormCreateTrip() {
       <form onSubmit={handleSubmit(submitTrip)}>
         <FieldGroup>
           <FieldSet>
-            <FieldLegend>Create a new trip</FieldLegend>
+            {/* The legend is the page's title, so it carries the <h1>. A
+                <legend> may hold heading content, and Tailwind's preflight
+                resets heading sizes, so this renders unchanged. */}
+            <FieldLegend>
+              <h1>Create a new trip</h1>
+            </FieldLegend>
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="trip-name">Trip name</FieldLabel>
@@ -83,7 +102,19 @@ export function FormCreateTrip() {
                       <SelectContent>
                         {Object.entries(CURRENCIES).map(([code, item]) => (
                           <SelectItem key={code} value={code}>
-                            {item.name}
+                            <div className="flex w-full items-center justify-start gap-s">
+                              <p className="text-3xl">
+                                {getCurrencyEmoji(code)}
+                              </p>
+                              <div className="flex flex-col items-start">
+                                <p className="font-bold">
+                                  {formatCurrencyCode(code)}
+                                </p>
+                                <span className="text-gray-400 text-xs font-bold">
+                                  {item.name}
+                                </span>
+                              </div>
+                            </div>
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -100,41 +131,64 @@ export function FormCreateTrip() {
                   control={control}
                   name="currencies"
                   render={({ field }) => (
-                    <Select>
-                      <SelectTrigger>
-                        <span>
-                          {(field.value ?? []).length > 0
-                            ? `${(field.value ?? []).length} selected`
-                            : "Select currencies"}
-                        </span>
-                      </SelectTrigger>
-                      <SelectContent className="mb-xs">
-                        <div className="flex flex-col gap-xs">
-                          {Object.entries(CURRENCIES).map(([code, item]) => (
-                            <div
-                              key={code}
-                              className="flex items-center gap-xxs hover:bg-gray-100 selected:bg-gray-100"
-                            >
-                              <Checkbox
-                                id={code}
-                                checked={(field.value ?? []).includes(code)}
-                                onCheckedChange={(checked) => {
-                                  const current = field.value ?? [];
-                                  if (checked) {
-                                    field.onChange([...current, code]);
-                                  } else {
-                                    field.onChange(
-                                      current.filter((c) => c !== code),
-                                    );
-                                  }
-                                }}
-                              />
-                              <Label htmlFor={code}>{item.name}</Label>
-                            </div>
-                          ))}
-                        </div>
-                      </SelectContent>
-                    </Select>
+                    <Combobox<string, true>
+                      multiple={true}
+                      autoHighlight
+                      items={CURRENCY_CODES}
+                      value={field.value ?? []}
+                      onValueChange={(newVal) => field.onChange(newVal ?? [])}
+                    >
+                      <ComboboxChips ref={anchor} className="w-full">
+                        <ComboboxValue>
+                          {(values: string[]) => (
+                            <>
+                              {values.map((code) => (
+                                <ComboboxChip
+                                  key={code}
+                                  showRemove
+                                  className="flex gap-xxs"
+                                >
+                                  <span>{getCurrencyEmoji(code)}</span>
+                                  <span>{formatCurrencyCode(code)}</span>
+                                </ComboboxChip>
+                              ))}
+                              <ComboboxChipsInput />
+                            </>
+                          )}
+                        </ComboboxValue>
+                      </ComboboxChips>
+                      <ComboboxContent className="mb-xs" anchor={anchor}>
+                        <ComboboxEmpty>No items found.</ComboboxEmpty>
+                        <ComboboxList className="flex flex-col gap-xxs">
+                          {(code: string) => {
+                            const data = CURRENCIES[code as CurrencyCodeType];
+                            return (
+                              <ComboboxItem
+                                key={code}
+                                value={code}
+                                className="flex items-center justify-between hover:bg-gray-100 selected:bg-gray-100 p-xxs text-xs gap-xxs hover:cursor-pointer hover:bg-background"
+                              >
+                                <div className="flex items-center gap-xxs">
+                                  <p className="text-m">
+                                    {getCurrencyEmoji(code)}
+                                  </p>
+                                  <div className="flex items-center gap-xxs">
+                                    <p className="font-bold">
+                                      {formatCurrencyCode(code)}
+                                    </p>
+                                    {data && (
+                                      <span className="text-gray-400 text-xs font-bold">
+                                        {data.name}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </ComboboxItem>
+                            );
+                          }}
+                        </ComboboxList>
+                      </ComboboxContent>
+                    </Combobox>
                   )}
                 />
                 {errors.currencies?.message && (

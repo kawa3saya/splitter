@@ -1,5 +1,16 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { pageMetadata } from "@/utils/page-metadata";
+import { LEGAL_LAST_UPDATED } from "@/constants/site";
+import { formatDateJa } from "@/utils/date";
+
+// Japanese, to match the page's own content.
+export const metadata = pageMetadata({
+  path: "/privacy",
+  title: "プライバシーポリシー",
+  description:
+    "Seppaaan における個人情報等の取扱い、利用目的、第三者提供、お問い合わせ先について定めたプライバシーポリシーです。",
+});
 
 export default function PrivacyPage() {
   return (
@@ -12,10 +23,12 @@ export default function PrivacyPage() {
       </Link>
 
       <h1 className="text-3xl font-bold mb-2">プライバシーポリシー</h1>
-      <p className="text-sm text-gray-500 mb-8">最終更新日：2026年5月10日</p>
+      <p className="text-sm text-gray-500 mb-8">
+        最終更新日：{formatDateJa(LEGAL_LAST_UPDATED)}
+      </p>
 
       <p className="mb-8 leading-relaxed">
-        Splitter
+        Seppaaan
         運営（以下「運営者」といいます）は、運営者が提供するアプリケーション（以下「本サービス」といいます）における利用者の個人情報および個人関連情報（以下併せて「個人情報等」といいます）の取扱いについて、以下のとおりプライバシーポリシー（以下「本ポリシー」といいます）を定めます。
       </p>
 
@@ -218,7 +231,7 @@ export default function PrivacyPage() {
         本ポリシーまたは個人情報等の取扱いに関するお問い合わせは、以下のフォームよりご連絡ください。
       </p>
       <ul className="list-disc pl-6 space-y-1 leading-relaxed">
-        <li>運営者名：Splitter 運営</li>
+        <li>運営者名：Seppaaan 運営</li>
         <li>
           お問い合わせフォーム：
           <a
