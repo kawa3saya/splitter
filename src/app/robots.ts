@@ -1,4 +1,5 @@
-import { MetadataRoute } from "next"
+import { MetadataRoute } from "next";
+import { siteUrl } from "@/constants/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -7,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: "/api/",
     },
-    sitemap: "https://splitter.seppaaan.workers.dev/sitemap.xml",
-  }
+    sitemap: siteUrl("/sitemap.xml"),
+  };
 }

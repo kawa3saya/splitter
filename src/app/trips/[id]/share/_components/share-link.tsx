@@ -10,12 +10,13 @@ import {
 } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+import { siteUrl } from "@/constants/site";
 
 export function ShareLink({ tripId }: { tripId: string }) {
   const [copied, setCopied] = useState(false);
-  const tripUrl = `${SITE_URL}/trips/${tripId}`;
+  // Was read straight from process.env with an empty-string fallback, which
+  // made the copied link a bare "/trips/<id>" whenever the var was unset.
+  const tripUrl = siteUrl(`/trips/${tripId}`);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(tripUrl);
@@ -26,7 +27,7 @@ export function ShareLink({ tripId }: { tripId: string }) {
     <div className="flex flex-col gap-l w-full items-center">
       <CircleCheckBig className="size-16 text-primary" />
       <div>
-        <p className="text-xl font-bold">Trip created successfully</p>
+        <h1 className="text-xl font-bold">Trip created successfully</h1>
         <p>Share the trip with your friends</p>
       </div>
       <Field>

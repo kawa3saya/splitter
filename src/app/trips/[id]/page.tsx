@@ -7,6 +7,7 @@ import { TripCard } from "@/app/trips/[id]/_components/trip-card";
 import { TripPaymentCard } from "@/app/trips/[id]/_components/trip-payment-card";
 import { TripPaymentDialog } from "@/app/trips/[id]/_components/trip-payment-dialog";
 import { getCurrencyEmoji } from "@/utils/get-currency-emoji";
+import { formatCurrencyCode } from "@/utils/format-currency-code";
 
 type ParamsProps = {
   params: Promise<{
@@ -30,7 +31,7 @@ export default async function TripDetailPage({ params }: ParamsProps) {
         <TripCard trip={trip} users={users} />
         <div className="flex justify-between items-center">
           <p className="font-bold">
-            Base currency: {trip.base_currency.toUpperCase()}
+            Base currency: {formatCurrencyCode(trip.base_currency)}
             <span className="pl-xxs">
               {getCurrencyEmoji(trip.base_currency)}
             </span>

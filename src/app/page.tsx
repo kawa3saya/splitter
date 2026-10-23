@@ -2,6 +2,10 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FeaturesCarousel } from "@/app/_components/features-carousel";
+import { pageMetadata } from "@/utils/page-metadata";
+
+// No `title`: the home page keeps the full site title rather than "… | Seppaaan".
+export const metadata = pageMetadata({ path: "/" });
 
 export default function Home() {
   return (

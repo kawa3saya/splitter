@@ -7,9 +7,10 @@ export function Header() {
           <div className="w-8 h-8 bg-primary flex items-center justify-center rounded-lg">
             <span className="text-white font-extrabold text-xl">s</span>
           </div>
-          <h1 className="text-xl font-extrabold tracking-tight text-app-text text-base">
+          {/* The site name is not a heading: every page keeps its own <h1>. */}
+          <span className="text-xl font-extrabold tracking-tight text-app-text text-base">
             Seppaaan
-          </h1>
+          </span>
         </div>
       </Link>
     </header>
