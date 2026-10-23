@@ -3,19 +3,19 @@ import {
   SITE_DESCRIPTION,
   SITE_NAME,
   SITE_TITLE,
+  TITLE_TEMPLATE,
   siteUrl,
 } from "@/constants/site";
 
 /**
  * Open Graph fields shared by every route.
  *
- * `url` is deliberately left out: Next shallow-merges metadata, so a page that
- * declares `openGraph` replaces the layout's object instead of merging into
- * it, and every route therefore has to spread these itself.
+ * `url`, `title` and `description` are deliberately left out: Next
+ * shallow-merges metadata, so a page that declares `openGraph` replaces the
+ * layout's object instead of merging into it, and every route therefore has
+ * to spread these itself.
  */
 export const OPEN_GRAPH_BASE = {
-  title: SITE_TITLE,
-  description: SITE_DESCRIPTION,
   siteName: SITE_NAME,
   images: [
     {
@@ -30,23 +30,57 @@ export const OPEN_GRAPH_BASE = {
 } satisfies Metadata["openGraph"];
 
 /**
+ * Metadata for routes that must stay out of search results.
+ *
+ * A trip's URL is its only access token, so a trip page that reached an index
+ * would expose the trip itself. This is a meta tag rather than a robots.txt
+ * rule on purpose: a disallowed URL is never fetched, so the crawler would
+ * never see the noindex and could still list the bare URL.
+ */
+export const PRIVATE_ROUTE_METADATA: Metadata = {
+  robots: { index: false, follow: false },
+};
+
+type PageMetadataOptions = {
+  /** Route path starting with "/", e.g. "/privacy" */
+  path: string;
+  /** Page title without the site name; omit to use the full site title. */
+  title?: string;
+  /** Defaults to the site description. */
+  description?: string;
+};
+
+/**
  * Metadata for a publicly indexable route.
  *
  * Every page used to inherit the root layout's canonical and og:url, which
  * pointed at the home page — a page whose canonical names a different URL is
  * treated as a duplicate and dropped from the index, so /privacy, /terms and
- * /trips/new could never rank under their own URLs.
+ * /trips/new could never rank under their own URLs. They also all shared one
+ * title and description, which gives search engines nothing to tell them
+ * apart.
  *
- * Trip routes intentionally do not call this: their URL is the only access
- * token a trip has, so it should appear in neither a canonical tag nor og:url.
- *
- * @param path - Route path starting with "/", e.g. "/privacy"
+ * Trip routes intentionally do not call this: see PRIVATE_ROUTE_METADATA.
  */
-export function pageMetadata(path: string): Metadata {
+export function pageMetadata({
+  path,
+  title,
+  description = SITE_DESCRIPTION,
+}: PageMetadataOptions): Metadata {
   const url = siteUrl(path);
+  // Next applies the layout's title template to `title`, but not to
+  // og:title — that one is built here so the two stay in step.
+  const fullTitle = title ? TITLE_TEMPLATE.replace("%s", title) : SITE_TITLE;
 
   return {
+    ...(title ? { title } : {}),
+    description,
     alternates: { canonical: url },
-    openGraph: { ...OPEN_GRAPH_BASE, url },
+    openGraph: {
+      ...OPEN_GRAPH_BASE,
+      title: fullTitle,
+      description,
+      url,
+    },
   };
 }

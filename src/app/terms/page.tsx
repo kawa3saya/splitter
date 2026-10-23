@@ -2,7 +2,13 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { pageMetadata } from "@/utils/page-metadata";
 
-export const metadata = pageMetadata("/terms");
+// Japanese, to match the page's own content.
+export const metadata = pageMetadata({
+  path: "/terms",
+  title: "利用規約",
+  description:
+    "Seppaaan の利用条件、禁止事項、免責事項、規約の変更について定めた利用規約です。",
+});
 
 export default function TermsPage() {
   return (

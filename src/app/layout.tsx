@@ -6,7 +6,12 @@ import { Header } from "@/components/ui/header";
 import { Footer } from "@/components/ui/footer";
 import { Main } from "@/components/ui/main";
 import { StructuredData } from "@/app/_components/structured-data";
-import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from "@/constants/site";
+import {
+  SITE_DESCRIPTION,
+  SITE_TITLE,
+  SITE_URL,
+  TITLE_TEMPLATE,
+} from "@/constants/site";
 import { OPEN_GRAPH_BASE } from "@/utils/page-metadata";
 
 const geistSans = Geist({
@@ -23,7 +28,12 @@ const geistMono = Geist_Mono({
 // static rendering, and the origin is already known from SITE_URL.
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: SITE_TITLE,
+  // `default` covers routes that set no title of their own; the rest supply a
+  // short one and the template adds the site name.
+  title: {
+    default: SITE_TITLE,
+    template: TITLE_TEMPLATE,
+  },
   description: SITE_DESCRIPTION,
   keywords: [
     "split expenses",
@@ -34,7 +44,12 @@ export const metadata: Metadata = {
   ],
   // Fallback for routes that set no metadata of their own — the trip pages.
   // Their own URL must not leak here, so it stays the site root.
-  openGraph: { ...OPEN_GRAPH_BASE, url: SITE_URL },
+  openGraph: {
+    ...OPEN_GRAPH_BASE,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+  },
   twitter: {
     card: "summary_large_image",
     title: SITE_TITLE,

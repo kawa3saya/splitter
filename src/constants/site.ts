@@ -18,6 +18,9 @@ export const SITE_NAME = "Seppaaan";
 
 export const SITE_TITLE = "Seppaaan - Split expenses easily and fairly";
 
+/** Applied to each page's own title, e.g. "Privacy Policy | Seppaaan". */
+export const TITLE_TEMPLATE = `%s | ${SITE_NAME}`;
+
 export const SITE_DESCRIPTION =
   "Track group spending, split across currencies, and settle up in seconds — no sign-up required.";
 

@@ -2,7 +2,13 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { pageMetadata } from "@/utils/page-metadata";
 
-export const metadata = pageMetadata("/privacy");
+// Japanese, to match the page's own content.
+export const metadata = pageMetadata({
+  path: "/privacy",
+  title: "プライバシーポリシー",
+  description:
+    "Seppaaan における個人情報等の取扱い、利用目的、第三者提供、お問い合わせ先について定めたプライバシーポリシーです。",
+});
 
 export default function PrivacyPage() {
   return (
