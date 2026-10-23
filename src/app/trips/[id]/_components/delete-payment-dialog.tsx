@@ -10,6 +10,7 @@ import {
 import { X, Trash2 } from "lucide-react";
 import { PaymentWithDetailsType } from "@/app/trips/[id]/_types/trip-detail-type";
 import { getCurrencyEmoji } from "@/utils/get-currency-emoji";
+import { formatCurrencyCode } from "@/utils/format-currency-code";
 import { useDeletePayment } from "@/app/trips/[id]/_hooks/use-delete-payment";
 
 export function DeletePaymentDialog({
@@ -48,7 +49,7 @@ export function DeletePaymentDialog({
               Paid by {payment.user_name}
               <br />
               {getCurrencyEmoji(payment.currency_code)} {payment.amount}{" "}
-              {payment.currency_code}
+              {formatCurrencyCode(payment.currency_code)}
             </p>
           </div>
         </div>

@@ -1,11 +1,18 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
-import { headers } from "next/headers";
 import "./globals.css";
 import { Header } from "@/components/ui/header";
 import { Footer } from "@/components/ui/footer";
 import { Main } from "@/components/ui/main";
+import { StructuredData } from "@/app/_components/structured-data";
+import {
+  SITE_DESCRIPTION,
+  SITE_TITLE,
+  SITE_URL,
+  TITLE_TEMPLATE,
+} from "@/constants/site";
+import { OPEN_GRAPH_BASE, TWITTER_BASE } from "@/utils/page-metadata";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,79 +24,55 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export async function generateMetadata(): Promise<Metadata> {
-  const headersList = await headers();
-  const host = headersList.get("host") || "splitter.seppaaan.workers.dev";
-  const protocol = headersList.get("x-forwarded-proto") || "https";
-  const baseUrl = `${protocol}://${host}`;
-
-  return {
-    metadataBase: new URL(baseUrl),
-    title: "Seppaaan - Split expenses easily and fairly",
-    description:
-      "Track group spending, split across currencies, and settle up in seconds — no sign-up required.",
-    keywords: [
-      "split expenses",
-      "group spending",
-      "currency converter",
-      "trip expenses",
-      "settle up",
-    ],
-    openGraph: {
-      title: "Seppaaan - Split expenses easily and fairly",
-      description:
-        "Track group spending, split across currencies, and settle up in seconds — no sign-up required.",
-      url: "https://splitter.seppaaan.workers.dev",
-      siteName: "Seppaaan",
-      images: [
-        {
-          url: "/opengraph-image.png",
-          width: 1200,
-          height: 630,
-          alt: "Seppaaan",
-        },
-      ],
-      locale: "en_US",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: "Seppaaan - Split expenses easily and fairly",
-      description:
-        "Track group spending, split across currencies, and settle up in seconds",
-      images: ["/opengraph-image.png"],
-    },
-    robots: {
+// Static on purpose: reading headers() here would opt every route out of
+// static rendering, and the origin is already known from SITE_URL.
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  // `default` covers routes that set no title of their own; the rest supply a
+  // short one and the template adds the site name.
+  title: {
+    default: SITE_TITLE,
+    template: TITLE_TEMPLATE,
+  },
+  description: SITE_DESCRIPTION,
+  keywords: [
+    "split expenses",
+    "group spending",
+    "currency converter",
+    "trip expenses",
+    "settle up",
+  ],
+  // Fallback for routes that set no metadata of their own — the trip pages.
+  // Their own URL must not leak here, so it stays the site root.
+  openGraph: {
+    ...OPEN_GRAPH_BASE,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+  },
+  twitter: {
+    ...TWITTER_BASE,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
       index: true,
       follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-      },
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
-    icons: {
-      icon: "/favicon.ico",
-    },
-    alternates: {
-      canonical: "https://splitter.seppaaan.workers.dev",
-    },
-    other: {
-      "application/ld+json": JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        name: "Seppaaan",
-        description:
-          "Track group spending, split across currencies, and settle up in seconds",
-        url: "https://splitter.seppaaan.workers.dev",
-        applicationCategory: "UtilityApplication",
-        operatingSystem: "Web",
-      }),
-    },
-  };
-}
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
+  // No `alternates.canonical` here: it would be inherited by every page and
+  // declare each of them a duplicate of the home page. Each indexable route
+  // sets its own via pageMetadata().
+};
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -107,6 +90,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-dvh p-0 bg-background`}
       >
+        <StructuredData />
         <Header />
         <Main>{children}</Main>
         <Toaster position="top-center" />

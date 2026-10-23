@@ -1,5 +1,16 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { pageMetadata } from "@/utils/page-metadata";
+import { LEGAL_LAST_UPDATED } from "@/constants/site";
+import { formatDateJa } from "@/utils/date";
+
+// Japanese, to match the page's own content.
+export const metadata = pageMetadata({
+  path: "/terms",
+  title: "利用規約",
+  description:
+    "Seppaaan の利用条件、禁止事項、免責事項、規約の変更について定めた利用規約です。",
+});
 
 export default function TermsPage() {
   return (
@@ -12,7 +23,9 @@ export default function TermsPage() {
       </Link>
 
       <h1 className="text-3xl font-bold mb-2">利用規約</h1>
-      <p className="text-sm text-gray-500 mb-8">最終更新日：2026年5月10日</p>
+      <p className="text-sm text-gray-500 mb-8">
+        最終更新日：{formatDateJa(LEGAL_LAST_UPDATED)}
+      </p>
 
       <p className="mb-8 leading-relaxed">
         本利用規約（以下「本規約」といいます）は、Seppaaan

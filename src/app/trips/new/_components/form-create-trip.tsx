@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { CURRENCIES, CURRENCY_CODES } from "@/constants/currencies";
 import { CurrencyCodeType } from "@/types/currency-code-type";
 import { getCurrencyEmoji } from "@/utils/get-currency-emoji";
+import { formatCurrencyCode } from "@/utils/format-currency-code";
 import { Button } from "@/components/ui/button";
 import {
   Combobox,
@@ -67,7 +68,12 @@ export function FormCreateTrip() {
       <form onSubmit={handleSubmit(submitTrip)}>
         <FieldGroup>
           <FieldSet>
-            <FieldLegend>Create a new trip</FieldLegend>
+            {/* The legend is the page's title, so it carries the <h1>. A
+                <legend> may hold heading content, and Tailwind's preflight
+                resets heading sizes, so this renders unchanged. */}
+            <FieldLegend>
+              <h1>Create a new trip</h1>
+            </FieldLegend>
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="trip-name">Trip name</FieldLabel>
@@ -102,7 +108,7 @@ export function FormCreateTrip() {
                               </p>
                               <div className="flex flex-col items-start">
                                 <p className="font-bold">
-                                  {code.toUpperCase()}
+                                  {formatCurrencyCode(code)}
                                 </p>
                                 <span className="text-gray-400 text-xs font-bold">
                                   {item.name}
@@ -143,7 +149,7 @@ export function FormCreateTrip() {
                                   className="flex gap-xxs"
                                 >
                                   <span>{getCurrencyEmoji(code)}</span>
-                                  <span>{code.toUpperCase()}</span>
+                                  <span>{formatCurrencyCode(code)}</span>
                                 </ComboboxChip>
                               ))}
                               <ComboboxChipsInput />
@@ -168,7 +174,7 @@ export function FormCreateTrip() {
                                   </p>
                                   <div className="flex items-center gap-xxs">
                                     <p className="font-bold">
-                                      {code.toUpperCase()}
+                                      {formatCurrencyCode(code)}
                                     </p>
                                     {data && (
                                       <span className="text-gray-400 text-xs font-bold">

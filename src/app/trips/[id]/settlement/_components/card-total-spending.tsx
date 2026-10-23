@@ -1,4 +1,5 @@
 import { TotalSpendingType } from "@/app/trips/[id]/settlement/_types/settlement-type";
+import { formatCurrencyCode } from "@/utils/format-currency-code";
 
 export function CardTotalSpending({
   totalSpending,
@@ -20,7 +21,7 @@ export function CardTotalSpending({
         >
           <p className="font-bold">{spending.user_name}</p>
           <p className="font-bold text-primary">
-            {spending.amount} {baseCurrency}
+            {spending.amount} {formatCurrencyCode(baseCurrency)}
           </p>
         </div>
       ))}

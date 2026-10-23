@@ -1,5 +1,6 @@
 import { SettlementType } from "@/app/trips/[id]/settlement/_types/settlement-type";
 import { ArrowRight } from "lucide-react";
+import { formatCurrencyCode } from "@/utils/format-currency-code";
 
 export function CardSettlement({
   settlements,
@@ -23,7 +24,9 @@ export function CardSettlement({
           <p className="font-bold">{settlement.from_user_name}</p>
           <ArrowRight className="size-4 text-primary stroke-2" />
           <p className="font-bold">{settlement.to_user_name}</p>
-          <p className="font-bold">{settlement.amount} {baseCurrency}</p>
+          <p className="font-bold">
+            {settlement.amount} {formatCurrencyCode(baseCurrency)}
+          </p>
         </div>
       ))}
     </div>

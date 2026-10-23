@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getCurrencyEmoji } from "@/utils/get-currency-emoji";
+import { formatCurrencyCode } from "@/utils/format-currency-code";
 import { formatDate } from "@/utils/date";
 import { TripPaymentDialog } from "@/app/trips/[id]/_components/trip-payment-dialog";
 import { CurrencyType, UserType } from "@/types/type";
@@ -46,7 +47,7 @@ export function TripPaymentCard({
           <div className="flex justify-between items-center">
             <CardDescription className="text-sm font-bold">
               {getCurrencyEmoji(payment.currency_code)} {payment.amount}{" "}
-              {payment.currency_code.toUpperCase()}
+              {formatCurrencyCode(payment.currency_code)}
             </CardDescription>
             <TripPaymentDialog
               baseCurrency={baseCurrency}

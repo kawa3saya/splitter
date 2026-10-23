@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -uo pipefail
+
+if ! command -v jq >/dev/null 2>&1; then
+  echo "jq が見つからないため Bash ガードを適用できません。jq を入れてください。" >&2
+  exit 2
+fi
+
+cmd=$(jq -r '.tool_input.command // ""') || exit 2   # 不正 JSON も fail-closed に
+
+# ガードレール自体（設定・フック）と .gitignore の「変更」のみ禁止。読み取りや git add/diff は許可
+GUARD_PATH='(\.claude/(settings|hooks)|\.gitignore)'
+CMDPOS='(^|[|;&(]|[[:space:]])'
+SQ=$'\047'
+W_REDIR=">[[:space:]]*[\"${SQ}]?[^[:space:]|;&]*${GUARD_PATH}"
+W_VERB="${CMDPOS}(tee|rm|mv|cp|chmod|chown|truncate|install|ln|patch|vim?|nano|git[[:space:]]+(checkout|restore|apply|clean))[[:space:]][^|;&]*${GUARD_PATH}"
+W_SEDI="${CMDPOS}sed[[:space:]][^|;&]*-i[^|;&]*${GUARD_PATH}"
+
+if printf '%s' "$cmd" | grep -qE "$GUARD_PATH" && {
+     printf '%s' "$cmd" | grep -qE "$W_REDIR" ||
+     printf '%s' "$cmd" | grep -qE "$W_VERB"  ||
+     printf '%s' "$cmd" | grep -qE "$W_SEDI"; }; then
+  echo "ガードレール設定の変更は Claude からは行えません。手動で編集してください: $cmd" >&2
+  exit 2
+fi
+
+# トークン終端。空白と行末だけでは --force-with-lease=origin/main、npm run deploy&&…、
+# bash -c "npm run deploy" が漏れるので、= と区切り子・クォート・閉じ括弧も終端扱いにする
+END="([[:space:]|;&)=\"${SQ}]|"'$)'
+
+# force push 検出（引数順・結合フラグ・+refspec に対応。\047 は ' のエスケープ）
+FORCE_PUSH="push([[:space:]]+[^|;&]*)?[[:space:]]+(--force(-with-lease)?${END}|-[[:alnum:]]*f[[:alnum:]]*${END})|push[[:space:]]+[^|;&]*[[:space:]][\"${SQ}]?[+][^[:space:]]+"
+
+# デプロイ検出。opennextjs は bin 名 opennextjs-cloudflare とスコープ名
+# @opennextjs/cloudflare のどちらでも同じバイナリが起動するので両方見る。
+# npx の @version 付き指定（wrangler@latest など）も拾う
+DEPLOY_BIN="(wrangler|@?opennextjs[-/]cloudflare)(@[^[:space:]]+)?[[:space:]]+([^|;&]*[[:space:]])?deploy"
+DEPLOY_RUN="(npm|pnpm|yarn|bun)[[:space:]]+(run[[:space:]]+)?([^|;&]*[[:space:]])?deploy${END}"
+DB_OPS="db[[:space:]]+(reset|push)|supabase[[:space:]]+migration[[:space:]]+up"
+
+# 本番・DB に影響する操作を禁止
+if printf '%s' "$cmd" | grep -qE "${DEPLOY_BIN}|${DEPLOY_RUN}|${DB_OPS}" \
+  || printf '%s' "$cmd" | grep -qE "$FORCE_PUSH"; then
+  echo "本番・DBに影響する操作なので手動で実行してください: $cmd" >&2
+  exit 2
+fi
+exit 0
