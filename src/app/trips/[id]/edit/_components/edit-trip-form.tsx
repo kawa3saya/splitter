@@ -8,6 +8,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { TripType, UserType, CurrencyType } from "@/types/type";
 import { getCurrencyEmoji } from "@/utils/get-currency-emoji";
+import { formatCurrencyCode } from "@/utils/format-currency-code";
 import { CURRENCIES, CURRENCY_CODES } from "@/constants/currencies";
 import { CurrencyCodeType } from "@/types/currency-code-type";
 import { Button } from "@/components/ui/button";
@@ -80,7 +81,7 @@ export function EditTripForm({
             <div className="flex items-center gap-xxs justify-between p-xs">
               <p className="flex items-center gap-xxs font-bold text-gray-400">
                 <span>{getCurrencyEmoji(trip.base_currency)}</span>
-                <span>{trip.base_currency.toUpperCase()}</span>
+                <span>{formatCurrencyCode(trip.base_currency)}</span>
                 <span>-</span>
                 <span>
                   {CURRENCIES[trip.base_currency as CurrencyCodeType]?.name}
@@ -100,7 +101,7 @@ export function EditTripForm({
               >
                 <p className="flex items-center gap-xxs font-bold text-gray-400">
                   <span>{getCurrencyEmoji(currency.code)}</span>
-                  <span>{currency.code.toUpperCase()}</span>
+                  <span>{formatCurrencyCode(currency.code)}</span>
                   <span>-</span>
                   <span>
                     {CURRENCIES[currency.code as CurrencyCodeType]?.name}
@@ -141,7 +142,7 @@ export function EditTripForm({
                               className="flex gap-xxs"
                             >
                               <span>{getCurrencyEmoji(code)}</span>
-                              <span>{code.toUpperCase()}</span>
+                              <span>{formatCurrencyCode(code)}</span>
                             </ComboboxChip>
                           ))}
                           <ComboboxChipsInput />
@@ -167,7 +168,7 @@ export function EditTripForm({
                               </p>
                               <div className="flex flex-col">
                                 <p className="font-bold">
-                                  {code.toUpperCase()}
+                                  {formatCurrencyCode(code)}
                                 </p>
                                 {data && (
                                   <span className="text-gray-400 text-xs font-bold">

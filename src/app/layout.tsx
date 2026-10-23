@@ -1,11 +1,17 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
-import { headers } from "next/headers";
 import "./globals.css";
 import { Header } from "@/components/ui/header";
 import { Footer } from "@/components/ui/footer";
 import { Main } from "@/components/ui/main";
+import { StructuredData } from "@/app/_components/structured-data";
+import {
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_TITLE,
+  SITE_URL,
+} from "@/constants/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,79 +23,59 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export async function generateMetadata(): Promise<Metadata> {
-  const headersList = await headers();
-  const host = headersList.get("host") || "splitter.seppaaan.workers.dev";
-  const protocol = headersList.get("x-forwarded-proto") || "https";
-  const baseUrl = `${protocol}://${host}`;
-
-  return {
-    metadataBase: new URL(baseUrl),
-    title: "Seppaaan - Split expenses easily and fairly",
-    description:
-      "Track group spending, split across currencies, and settle up in seconds — no sign-up required.",
-    keywords: [
-      "split expenses",
-      "group spending",
-      "currency converter",
-      "trip expenses",
-      "settle up",
+// Static on purpose: reading headers() here would opt every route out of
+// static rendering, and the origin is already known from SITE_URL.
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  keywords: [
+    "split expenses",
+    "group spending",
+    "currency converter",
+    "trip expenses",
+    "settle up",
+  ],
+  openGraph: {
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: SITE_NAME,
+      },
     ],
-    openGraph: {
-      title: "Seppaaan - Split expenses easily and fairly",
-      description:
-        "Track group spending, split across currencies, and settle up in seconds — no sign-up required.",
-      url: "https://splitter.seppaaan.workers.dev",
-      siteName: "Seppaaan",
-      images: [
-        {
-          url: "/opengraph-image.png",
-          width: 1200,
-          height: 630,
-          alt: "Seppaaan",
-        },
-      ],
-      locale: "en_US",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: "Seppaaan - Split expenses easily and fairly",
-      description:
-        "Track group spending, split across currencies, and settle up in seconds",
-      images: ["/opengraph-image.png"],
-    },
-    robots: {
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: ["/opengraph-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
       index: true,
       follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-      },
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
-    icons: {
-      icon: "/favicon.ico",
-    },
-    alternates: {
-      canonical: "https://splitter.seppaaan.workers.dev",
-    },
-    other: {
-      "application/ld+json": JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        name: "Seppaaan",
-        description:
-          "Track group spending, split across currencies, and settle up in seconds",
-        url: "https://splitter.seppaaan.workers.dev",
-        applicationCategory: "UtilityApplication",
-        operatingSystem: "Web",
-      }),
-    },
-  };
-}
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
+  alternates: {
+    canonical: SITE_URL,
+  },
+};
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -107,6 +93,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-dvh p-0 bg-background`}
       >
+        <StructuredData />
         <Header />
         <Main>{children}</Main>
         <Toaster position="top-center" />

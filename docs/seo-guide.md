@@ -107,9 +107,13 @@ export default async function Image() {
 
 ### 3. robots.txt
 
+`src/app/robots.ts` のみで定義します。`public/robots.txt` を置くと静的アセット側が
+優先されてこのルートが死ぬので、両方作らないこと。
+
 ```
 # src/app/robots.ts
 import { MetadataRoute } from 'next'
+import { SITE_URL } from '@/constants/site'
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -118,7 +122,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/api/',
     },
-    sitemap: 'https://splitter.seppaaan.workers.dev/sitemap.xml',
+    sitemap: `${SITE_URL}/sitemap.xml`,
   }
 }
 ```
@@ -128,11 +132,12 @@ export default function robots(): MetadataRoute.Robots {
 ```typescript
 // src/app/sitemap.ts
 import { MetadataRoute } from 'next'
+import { SITE_URL } from '@/constants/site'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: 'https://splitter.seppaaan.workers.dev',
+      url: SITE_URL,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 1,
@@ -141,19 +146,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
 }
 ```
 
+トリップ詳細（`/trips/[id]`）は URL 自体がアクセストークンなので、サイトマップには
+含めません。
+
 ### 5. 構造化データ（Schema.org）
 
-JSON-LDで構造化データを埋め込みます。
+JSON-LDは必ず `<script type="application/ld+json">` として描画します。
+`metadata.other` に入れると `<meta name="application/ld+json" content="...">` に
+なってクローラーに読まれないので使わないこと。実装は
+`src/app/_components/structured-data.tsx`。
 
 ```typescript
-// components/StructuredData.tsx
-export const StructuredData = () => {
+// src/app/_components/structured-data.tsx
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@/constants/site'
+
+export function StructuredData() {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
-    name: 'Splitter',
-    description: '複数の通貨で金額を簡単に分割できるツール',
-    url: 'https://splitter.seppaaan.workers.dev',
+    name: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
     applicationCategory: 'UtilityApplication',
     operatingSystem: 'Web',
   }
@@ -166,6 +179,11 @@ export const StructuredData = () => {
   )
 }
 ```
+
+### 6. メタデータは静的に保つ
+
+ルートレイアウトの `generateMetadata` で `headers()` を呼ぶと全ルートが静的生成から
+外れます。オリジンは `SITE_URL`（`NEXT_PUBLIC_SITE_URL` で上書き可）から組むこと。
 
 ## キーワード戦略
 
